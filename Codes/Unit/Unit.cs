@@ -5,16 +5,34 @@ using UnityEngine;
 namespace Unit
 {
     /// <summary>
-    /// µ¥Î»»ùÀà(¼Ì³ĞµÄÀàĞÍ×¢Òâ³õÊ¼»¯¸Ã»ùÀàµÄÊı¾İ³ÉÔ±)
+    /// å•ä½åŸºç±»(ç»§æ‰¿çš„ç±»å‹æ³¨æ„åˆå§‹åŒ–è¯¥åŸºç±»çš„æ•°æ®æˆå‘˜)
     /// </summary>
     public class Unit : MonoBehaviour
     {
-        [Header("×î´óÉúÃüÖµ")] public int maxHP;
-        [Header("ÒÆ¶¯ËÙ¶È")] public float moveSpeed;
+        /// <summary>
+        /// æœ€å¤§ç”Ÿå‘½å€¼
+        /// </summary>
+        [Header("æœ€å¤§ç”Ÿå‘½å€¼")] public int maxHP;
+        /// <summary>
+        /// ç§»åŠ¨é€Ÿåº¦
+        /// </summary>
+        [Header("ç§»åŠ¨é€Ÿåº¦")] public float moveSpeed;
 
+        /// <summary>
+        /// æœå‘
+        /// </summary>
         [HideInInspector] public int faceDir;
+        /// <summary>
+        /// å½“å‰ç”Ÿå‘½å€¼
+        /// </summary>
         [HideInInspector] public int currentHP;
+        /// <summary>
+        /// æ˜¯å¦è§¦åœ°
+        /// </summary>
         [HideInInspector] public bool isGrounded;
+        /// <summary>
+        /// è§¦åº•ä¼ æ„Ÿå™¨
+        /// </summary>
         [HideInInspector] protected GroundSensor groundSensor;
     }
 }
