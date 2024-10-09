@@ -9,10 +9,12 @@ namespace FSM
     {
         protected StateMachine myFSM;
         protected GameObject myObject;
+        protected Unit.Player myPlayer;
         public BaseState(StateMachine fsm)
         {
             myFSM = fsm;
             myObject = fsm.myObject;
+            myPlayer = myObject.GetComponent<Unit.Player>();
         }
         public abstract void OnEnter();
         public abstract void OnUpdate();
@@ -30,6 +32,7 @@ namespace FSM
         Jump,
         Attack,
         Dash,
-        Hurt
+        Hurt,
+        Default
     }
 }
