@@ -27,33 +27,35 @@ namespace FSM
 
         public override void OnUpdate()
         {
-            //²¥·Å¶¯»­
+            //æ’­æ”¾åŠ¨ç”»
 
-            if(Input.GetKeyDown(KeyCode.LeftShift))//
+            if(Input.GetKeyDown(KeyCode.LeftShift))//é—ªé¿
             {
                 myFSM.SetState(StateKind.Dash);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if(false)//¼¼ÄÜ¹¥»÷
+            else if(false)//æŠ€èƒ½æ”»å‡»
             {
                 
             }
-            else if(false)//ÖØ¹¥»÷
+            else if(false)//é‡æ”»å‡»
             {
 
             }
-            else if(false)//Çá¹¥»÷
+            else if(false)//è½»æ”»å‡»
             {
 
             }
-            else if(Input.GetKeyDown(KeyCode.Space))//ÌøÔ¾
+            else if(Input.GetKeyDown(KeyCode.Space))//è·³è·ƒ
             {
 
-            }
-            else if(Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.D))//ÒÆ¶¯
+            }   
+            else if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))//ç§»åŠ¨
             {
-
+                myFSM.SetState(StateKind.Move);
+                OnExit();
+                myFSM.CurrentState.OnEnter();
             }
         }
     }
@@ -66,22 +68,52 @@ namespace FSM
         }
         public override void OnEnter()
         {
-            
+            Debug.Log("Move Enter");
         }
 
         public override void OnExit()
         {
-            
+            Debug.Log("Move Exit");
         }
 
         public override void OnFixedUpdate()
         {
-            
+            //è°ƒç”¨æ°´å¹³ç§»åŠ¨æ–¹æ³•
+            myPlayer.MoveHorizontal();
         }
 
         public override void OnUpdate()
         {
-            
+            //æ’­æ”¾åŠ¨ç”»
+
+            if (Input.GetKeyDown(KeyCode.LeftShift))//é—ªé¿
+            {
+                myFSM.SetState(StateKind.Dash);
+                OnExit();
+                myFSM.CurrentState.OnEnter();
+            }
+            else if (false)//æŠ€èƒ½æ”»å‡»
+            {
+
+            }
+            else if (false)//é‡æ”»å‡»
+            {
+
+            }
+            else if (false)//è½»æ”»å‡»
+            {
+
+            }
+            else if (Input.GetKeyDown(KeyCode.Space))//è·³è·ƒ
+            {
+
+            }
+            else if(!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)))//æ¾å¼€AD
+            {
+                myFSM.SetState(StateKind.Idle);
+                OnExit();
+                myFSM.CurrentState.OnEnter();
+            }
         }
     }
 
@@ -141,18 +173,16 @@ namespace FSM
 
     public class DashState : BaseState
     {
-        private Unit.Player myPlayer;
         private Rigidbody2D myRigidBody;
         private float timer;
 
         public DashState(StateMachine fsm) : base(fsm)
         {
-            myPlayer = myObject.GetComponent<Unit.Player>();
             myRigidBody = myObject.GetComponent<Rigidbody2D>();
         }
         public override void OnEnter()
         {
-            //ÉÁ±ÜÍ¨¹ı¸øÓè¹Ì¶¨³å´ÌËÙ¶ÈºÍÈ¡ÏûÖØÁ¦ÊµÏÖ
+            //é—ªé¿é€šè¿‡ç»™äºˆå›ºå®šå†²åˆºé€Ÿåº¦å’Œå–æ¶ˆé‡åŠ›å®ç°
             Debug.Log("Dash Enter");
             timer = 0;
             myPlayer.inDashWindow = true;
@@ -163,7 +193,8 @@ namespace FSM
         public override void OnExit()
         {
             Debug.Log("Dash Exit");
-            myObject.GetComponent<Rigidbody2D>().gravityScale = 0;
+            myObject.GetComponent<Rigidbody2D>().gravityScale = 1;
+            myRigidBody.velocity = new Vector2(0, 0);
             myPlayer.inDashWindow = false;
             timer = 0;
         }
@@ -178,12 +209,12 @@ namespace FSM
             timer += Time.deltaTime;
             if(timer > myPlayer.dashWindow && timer <= myPlayer.dashTime)
             {
-                //¼«ÏŞÉÁ±Ü´°¿ÚÆÚÅĞ¶¨
+                //æé™é—ªé¿çª—å£æœŸåˆ¤å®š
                 myPlayer.inDashWindow = false;
             }
             else if(timer > myPlayer.dashTime)
             {
-                //TODO:Ìí¼Ó¼ì²â£¬ÉÁ±Ü½áÊøºóÔÚ¿ÕÖĞÇĞ×¹Âä£¬ÔÚµØÃæÇĞ´ı»ú
+                //TODO:æ·»åŠ æ£€æµ‹ï¼Œé—ªé¿ç»“æŸååœ¨ç©ºä¸­åˆ‡å è½ï¼Œåœ¨åœ°é¢åˆ‡å¾…æœº
                 myFSM.SetState(StateKind.Idle);
                 OnExit();
                 myFSM.CurrentState.OnEnter();  
