@@ -5,34 +5,47 @@ using UnityEngine;
 namespace Unit
 {
     /// <summary>
-    /// å•ä½åŸºç±»(ç»§æ‰¿çš„ç±»å‹æ³¨æ„åˆå§‹åŒ–è¯¥åŸºç±»çš„æ•°æ®æˆå‘˜)
+    /// µ¥Î»»ùÀà(¼Ì³ĞµÄÀàĞÍ×¢Òâ³õÊ¼»¯¸Ã»ùÀàµÄÊı¾İ³ÉÔ±)
     /// </summary>
     public class Unit : MonoBehaviour
     {
         /// <summary>
-        /// æœ€å¤§ç”Ÿå‘½å€¼
+        /// ×î´óÉúÃüÖµ
         /// </summary>
-        [Header("æœ€å¤§ç”Ÿå‘½å€¼")] public int maxHP;
+        [Header("×î´óÉúÃüÖµ")] public int maxHP;
         /// <summary>
-        /// ç§»åŠ¨é€Ÿåº¦
+        /// ÒÆ¶¯ËÙ¶È
         /// </summary>
-        [Header("ç§»åŠ¨é€Ÿåº¦")] public float moveSpeed;
+        [Header("ÒÆ¶¯ËÙ¶È")] public float moveSpeed;
 
         /// <summary>
-        /// æœå‘
+        /// ³¯Ïò
         /// </summary>
         [HideInInspector] public int faceDir;
         /// <summary>
-        /// å½“å‰ç”Ÿå‘½å€¼
+        /// µ±Ç°ÉúÃüÖµ
         /// </summary>
         [HideInInspector] public int currentHP;
         /// <summary>
-        /// æ˜¯å¦è§¦åœ°
+        /// ÊÇ·ñ´¥µØ
         /// </summary>
         [HideInInspector] public bool isGrounded;
         /// <summary>
-        /// è§¦åº•ä¼ æ„Ÿå™¨
+        /// ´¥µ×´«¸ĞÆ÷
         /// </summary>
         [HideInInspector] protected GroundSensor groundSensor;
+
+        public void GetGroundState()
+        {
+            if (!isGrounded && groundSensor.GetComponent<GroundSensor>().State())
+            {
+                isGrounded = true;
+            }
+
+            if (isGrounded && !groundSensor.GetComponent<GroundSensor>().State())
+            {
+                isGrounded = false;
+            }
+        }
     }
 }
