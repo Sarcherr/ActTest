@@ -27,31 +27,31 @@ namespace FSM
 
         public override void OnUpdate()
         {
-            //æ’­æ”¾åŠ¨ç”»
+            //²¥·Å¶¯»­
 
-            if(Input.GetKeyDown(KeyCode.LeftShift))//é—ªé¿
+            if(Input.GetKeyDown(KeyCode.LeftShift))//ÉÁ±Ü
             {
                 myFSM.SetState(StateKind.Dash);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if(false)//æŠ€èƒ½æ”»å‡»
+            else if(false)//¼¼ÄÜ¹¥»÷
             {
                 
             }
-            else if(false)//é‡æ”»å‡»
+            else if(false)//ÖØ¹¥»÷
             {
 
             }
-            else if(false)//è½»æ”»å‡»
+            else if(false)//Çá¹¥»÷
             {
 
             }
-            else if(Input.GetKeyDown(KeyCode.Space))//è·³è·ƒ
+            else if(Input.GetKeyDown(KeyCode.Space))//ÌøÔ¾
             {
 
             }   
-            else if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))//ç§»åŠ¨
+            else if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))//ÒÆ¶¯
             {
                 myFSM.SetState(StateKind.Move);
                 OnExit();
@@ -62,9 +62,13 @@ namespace FSM
 
     public class MoveState : BaseState
     {
+        public Rigidbody2D myRigidBody;
+
+        private float speedY;
+
         public MoveState(StateMachine fsm) : base(fsm)
         {
-
+            myRigidBody = myPlayer.GetComponent<Rigidbody2D>();
         }
         public override void OnEnter()
         {
@@ -73,42 +77,57 @@ namespace FSM
 
         public override void OnExit()
         {
+            //±£ÏÕ,·ÀÖ¹ÂäµØÊ±OnUpdateÎ´»Ö¸´ÖØÁ¦
+            myRigidBody.gravityScale = 1;
             Debug.Log("Move Exit");
         }
 
         public override void OnFixedUpdate()
         {
-            //è°ƒç”¨æ°´å¹³ç§»åŠ¨æ–¹æ³•
+            //µ÷ÓÃË®Æ½ÒÆ¶¯·½·¨
             myPlayer.MoveHorizontal();
+            //ÏÂ×¹Í¬ÑùÕûºÏÔÚMove×´Ì¬ÖĞ
+            if (!myPlayer.isGrounded && myRigidBody.velocity.y < 0)
+            {
+                //ÏÂ×¹Ê±Ôö´óÖØÁ¦
+                myRigidBody.gravityScale = myPlayer.fallGravity;
+                //ÏŞÖÆ×î´óÏÂ×¹ËÙ¶È
+                speedY = Mathf.Min(myRigidBody.velocity.y, myPlayer.maxFallSpeed);
+                myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, speedY);
+            }
+            else
+            {
+                myRigidBody.gravityScale = 1;
+            }
         }
 
         public override void OnUpdate()
         {
-            //æ’­æ”¾åŠ¨ç”»
+            //²¥·Å¶¯»­
 
-            if (Input.GetKeyDown(KeyCode.LeftShift))//é—ªé¿
+            if (Input.GetKeyDown(KeyCode.LeftShift))//ÉÁ±Ü
             {
                 myFSM.SetState(StateKind.Dash);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if (false)//æŠ€èƒ½æ”»å‡»
+            else if (false)//¼¼ÄÜ¹¥»÷
             {
 
             }
-            else if (false)//é‡æ”»å‡»
+            else if (false)//ÖØ¹¥»÷
             {
 
             }
-            else if (false)//è½»æ”»å‡»
+            else if (false)//Çá¹¥»÷
             {
 
             }
-            else if (Input.GetKeyDown(KeyCode.Space))//è·³è·ƒ
+            else if (Input.GetKeyDown(KeyCode.Space) && myPlayer.isGrounded)//ÌøÔ¾
             {
 
             }
-            else if(!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)))//æ¾å¼€AD
+            else if(!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) || myPlayer.isGrounded)//ËÉ¿ªADÇÒÎ´ÔÚ×¹Âä
             {
                 myFSM.SetState(StateKind.Idle);
                 OnExit();
@@ -182,7 +201,7 @@ namespace FSM
         }
         public override void OnEnter()
         {
-            //é—ªé¿é€šè¿‡ç»™äºˆå›ºå®šå†²åˆºé€Ÿåº¦å’Œå–æ¶ˆé‡åŠ›å®ç°
+            //ÉÁ±ÜÍ¨¹ı¸øÓè¹Ì¶¨³å´ÌËÙ¶ÈºÍÈ¡ÏûÖØÁ¦ÊµÏÖ
             Debug.Log("Dash Enter");
             timer = 0;
             myPlayer.inDashWindow = true;
@@ -209,12 +228,12 @@ namespace FSM
             timer += Time.deltaTime;
             if(timer > myPlayer.dashWindow && timer <= myPlayer.dashTime)
             {
-                //æé™é—ªé¿çª—å£æœŸåˆ¤å®š
+                //¼«ÏŞÉÁ±Ü´°¿ÚÆÚÅĞ¶¨
                 myPlayer.inDashWindow = false;
             }
             else if(timer > myPlayer.dashTime)
             {
-                //TODO:æ·»åŠ æ£€æµ‹ï¼Œé—ªé¿ç»“æŸååœ¨ç©ºä¸­åˆ‡å è½ï¼Œåœ¨åœ°é¢åˆ‡å¾…æœº
+                //TODO:Ìí¼Ó¼ì²â£¬ÉÁ±Ü½áÊøºóÔÚ¿ÕÖĞÇĞ×¹Âä£¬ÔÚµØÃæÇĞ´ı»ú
                 myFSM.SetState(StateKind.Idle);
                 OnExit();
                 myFSM.CurrentState.OnEnter();  
@@ -225,6 +244,33 @@ namespace FSM
     public class HurtState : BaseState
     {
         public HurtState(StateMachine fsm) : base(fsm)
+        {
+
+        }
+        public override void OnEnter()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void OnExit()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void OnFixedUpdate()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public override void OnUpdate()
+        {
+            throw new System.NotImplementedException();
+        }
+    }
+
+    public class DefaultState : BaseState
+    {
+        public DefaultState(StateMachine fsm) : base(fsm)
         {
 
         }
