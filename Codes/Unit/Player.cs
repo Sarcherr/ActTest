@@ -4,68 +4,74 @@ using UnityEngine;
 
 namespace Unit
 {
-    //¼Ì³ĞµÄÊı¾İ³ÉÔ±:
-    //(×î´óÉúÃüÖµ)int maxHP;
-    //(ÒÆ¶¯ËÙ¶È)  float moveSpeed;
-    //(³¯Ïò)      int faceDir;
-    //(µ±Ç°ÉúÃüÖµ)int currentHP;
-    //(ÊÇ·ñ´¥µØ)  bool isGrounded;
-    //(´¥µØ´«¸ĞÆ÷)GroundSensor groundSensor;
+    //ç»§æ‰¿çš„æ•°æ®æˆå‘˜:
+    //(æœ€å¤§ç”Ÿå‘½å€¼)int maxHP;
+    //(ç§»åŠ¨é€Ÿåº¦)  float moveSpeed;
+    //(æœå‘)      int faceDir;
+    //(å½“å‰ç”Ÿå‘½å€¼)int currentHP;
+    //(æ˜¯å¦è§¦åœ°)  bool isGrounded;
+    //(è§¦åœ°ä¼ æ„Ÿå™¨)GroundSensor groundSensor;
     /// <summary>
-    /// Íæ¼Ò½ÇÉ«Àà
+    /// ç©å®¶è§’è‰²ç±»
     /// </summary>
     public class Player : Unit
     {
         /// <summary>
-        /// ÌøÔ¾Á¦¶È
+        /// è·³è·ƒåŠ›åº¦
         /// </summary>
-        [Header("ÌøÔ¾Á¦¶È")] public float jumpForce;
+        [Header("è·³è·ƒåŠ›åº¦")] public float jumpForce;
         /// <summary>
-        /// ÉÁ±ÜËÙ¶È
+        /// é—ªé¿é€Ÿåº¦
         /// </summary>
-        [Header("ÉÁ±ÜËÙ¶È")] public float dashSpeed;
+        [Header("é—ªé¿é€Ÿåº¦")] public float dashSpeed;
         /// <summary>
-        /// ÉÁ±ÜÊ±¼ä
+        /// é—ªé¿æ—¶é—´
         /// </summary>
-        [Header("ÉÁ±ÜÊ±¼ä")] public float dashTime;
+        [Header("é—ªé¿æ—¶é—´")] public float dashTime;
         /// <summary>
-        /// ÉÁ±Ü´°¿ÚÆÚ
+        /// é—ªé¿çª—å£æœŸ
         /// </summary>
-        [Header("ÉÁ±Ü´°¿ÚÆÚ")] public float dashWindow;
+        [Header("é—ªé¿çª—å£æœŸ")] public float dashWindow;
         /// <summary>
-        /// ÉÁ±ÜÀäÈ´    
+        /// é—ªé¿å†·å´    
         /// </summary>
-        [Header("ÉÁ±ÜÀäÈ´")] public float dashCold;
+        [Header("é—ªé¿å†·å´")] public float dashCold;
         /// <summary>
-        /// ×î´ó¼ÜÊÆÖµ
+        /// æœ€å¤§æ¶åŠ¿å€¼
         /// </summary>
-        [Header("×î´ó¼ÜÊÆÖµ")] public int maxSP;
+        [Header("æœ€å¤§æ¶åŠ¿å€¼")] public int maxSP;
         /// <summary>
-        /// Ô¤ÊäÈë´°¿Ú    
+        /// é¢„è¾“å…¥çª—å£    
         /// </summary>
-        [Header("Ô¤ÊäÈë´°¿Ú ")] public float preTime;
+        [Header("é¢„è¾“å…¥çª—å£ ")] public float preTime;
 
         /// <summary>
-        /// µ±Ç°¼ÜÊÆÖµ
+        /// å½“å‰æ¶åŠ¿å€¼
         /// </summary>
         [HideInInspector] public int currentSP;
         /// <summary>
-        /// ÊÇ·ñ´¦ÓÚ¼«ÏŞÉÁ±Ü´°¿ÚÆÚ
+        /// æ˜¯å¦å¤„äºæé™é—ªé¿çª—å£æœŸ
         /// </summary>
         [HideInInspector] public bool inDashWindow;
+        /// <summary>
+        /// æ˜¯å¦å¤„äºè¢«æ”»å‡»çŠ¶æ€
+        /// </summary>
+        [HideInInspector] public bool isAttacked;
 
         /// <summary>
-        /// ½ÇÉ«¸ÕÌå
+        /// è§’è‰²åˆšä½“
         /// </summary>
         private Rigidbody2D myRigidBody;
         /// <summary>
-        /// ½ÇÉ«×´Ì¬»ú
+        /// è§’è‰²çŠ¶æ€æœº
         /// </summary>
         private FSM.StateMachine fsm;
 
+        Animator animator;
+
         void Start()
         {
-            //Êı¾İ³ÉÔ±³õÊ¼»¯
+            //æ•°æ®æˆå‘˜åˆå§‹åŒ–
             faceDir = 1;
             currentSP = 0;
             isGrounded = true;
@@ -91,11 +97,11 @@ namespace Unit
         }
 
         /// <summary>
-        /// Ë®Æ½ÒÆ¶¯ÊäÈë
+        /// æ°´å¹³ç§»åŠ¨è¾“å…¥
         /// </summary>
         public void MoveHorizontal()
         {
-            //»ñÈ¡Ë®Æ½ÒÆ¶¯ÊäÈë,ĞŞ¸Ä³¯ÏòºÍËÙ¶È
+            //è·å–æ°´å¹³ç§»åŠ¨è¾“å…¥,ä¿®æ”¹æœå‘å’Œé€Ÿåº¦
             float inputX = Input.GetAxis("Horizontal");
 
             if (inputX > 0)
@@ -109,6 +115,33 @@ namespace Unit
 
             transform.localScale = new Vector3(faceDir, 1, 1);
             myRigidBody.velocity = new Vector2(inputX * moveSpeed, myRigidBody.velocity.y);
+        }
+        public void JumpandFall()
+        {
+            bool isFall = false;
+            bool isJump = false;
+            float verticalSpeed = rigid.velocity.y;
+            
+            if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+            {
+                isJump = true;
+            }
+            if (isJump)
+            {
+                
+                verticalSpeed = jumpForce;
+                animator.SetBool("isJump", isJump);
+            }
+            if (verticalSpeed < 0)    //å¤„äºä¸‹è½çŠ¶æ€
+            {
+                isJump = false;
+                isFall = true;
+                animator.SetBool("isFall", isFall)
+            }
+            if (isGrounded)
+            {
+                MoveHorizontal();
+            }
         }
     }
 }
