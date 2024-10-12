@@ -12,11 +12,13 @@ namespace FSM
         }
         public override void OnEnter()
         {
+            Debug.Log(myPlayer.isGrounded);
             Debug.Log("Idle Enter");
         }
 
         public override void OnExit()
         {
+            Debug.Log(myPlayer.isGrounded);
             Debug.Log("Idle Exit");
         }
 
@@ -29,7 +31,7 @@ namespace FSM
         {
             //≤•∑≈∂Øª≠
 
-            if(Input.GetKeyDown(KeyCode.LeftShift))//…¡±‹
+            if(Input.GetKeyDown(KeyCode.LeftShift) && myPlayer.dashColdTimer <= 0)//…¡±‹
             {
                 myFSM.SetState(StateKind.Dash);
                 OnExit();
@@ -109,7 +111,7 @@ namespace FSM
         {
             //≤•∑≈∂Øª≠
 
-            if (Input.GetKeyDown(KeyCode.LeftShift))//…¡±‹
+            if (Input.GetKeyDown(KeyCode.LeftShift) && myPlayer.dashColdTimer <= 0)//…¡±‹
             {
                 myFSM.SetState(StateKind.Dash);
                 OnExit();
@@ -129,9 +131,11 @@ namespace FSM
             }
             else if (Input.GetKeyDown(KeyCode.Space) && myPlayer.isGrounded)//Ã¯‘æ
             {
-
+                myFSM.SetState(StateKind.Jump);
+                OnExit();
+                myFSM.CurrentState.OnEnter();
             }
-            else if(!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) || myPlayer.isGrounded)//À…ø™AD«“Œ¥‘⁄◊π¬‰
+            else if(!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)//À…ø™AD«“Œ¥‘⁄◊π¬‰
             {
                 myFSM.SetState(StateKind.Idle);
                 OnExit();
@@ -150,6 +154,8 @@ namespace FSM
         }
         public override void OnEnter()
         {
+            Debug.Log("Jump Enter");
+
             //ªÒ»°¥π÷±∑ΩœÚÀŸ∂»
             myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, myPlayer.jumpForce);
             //‘› ±Ω˚”√groundsensor±‹√‚Ã¯‘æ≥ı∆⁄isgrounded»‘Œ™true
@@ -159,6 +165,7 @@ namespace FSM
 
         public override void OnExit()
         {
+            Debug.Log("Jump Exit");
             myPlayer.animator.SetBool("isJump", false);
         }
 
@@ -170,7 +177,7 @@ namespace FSM
 
         public override void OnUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.LeftShift))//…¡±‹
+            if (Input.GetKeyDown(KeyCode.LeftShift) && myPlayer.dashColdTimer <= 0)//…¡±‹
             {
                 myFSM.SetState(StateKind.Dash);
                 OnExit();
@@ -241,6 +248,8 @@ namespace FSM
             myPlayer.inDashWindow = true;
             myRigidBody.gravityScale = 0;
             myRigidBody.velocity = new Vector2 (myPlayer.dashSpeed * myPlayer.faceDir, 0);
+
+            myPlayer.dashColdTimer = myPlayer.dashCold;
         }
 
         public override void OnExit()

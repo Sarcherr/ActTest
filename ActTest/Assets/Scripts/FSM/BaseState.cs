@@ -33,6 +33,12 @@ namespace FSM
         Attack,
         Dash,
         Hurt,
+        Dead,
         Default
+    }
+
+    public enum AttackKind
+    {
+
     }
 }

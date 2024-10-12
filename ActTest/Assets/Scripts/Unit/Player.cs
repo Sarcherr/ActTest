@@ -55,6 +55,10 @@ namespace Unit
         /// </summary>
         [HideInInspector] public int currentSP;
         /// <summary>
+        /// 闪避冷却计时
+        /// </summary>
+        [HideInInspector] public float dashColdTimer;
+        /// <summary>
         /// 是否处于极限闪避窗口期
         /// </summary>
         [HideInInspector] public bool inDashWindow;
@@ -62,6 +66,10 @@ namespace Unit
         /// 是否处于被攻击状态
         /// </summary>
         [HideInInspector] public bool isAttacked;
+        /// <summary>
+        /// 当前状态可否取消(只用于闪避攻击等)
+        /// </summary>
+        [HideInInspector] public bool canCancel;
         /// <summary>
         /// 角色动画机
         /// </summary>
@@ -98,7 +106,9 @@ namespace Unit
         void Update()
         {
             fsm.OnUpdate();
+
             GetGroundState();
+            DashColdDown();
         }
 
         void FixedUpdate()
@@ -125,6 +135,17 @@ namespace Unit
 
             transform.localScale = new Vector3(faceDir, 1, 1);
             myRigidBody.velocity = new Vector2(inputX * moveSpeed, myRigidBody.velocity.y);
+        }
+
+        /// <summary>
+        /// 闪避冷却
+        /// </summary>
+        public void DashColdDown()
+        {       
+            if(dashColdTimer > 0)
+            {
+                dashColdTimer -= Time.deltaTime;
+            }
         }
     }
 }
