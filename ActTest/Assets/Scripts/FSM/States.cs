@@ -49,7 +49,9 @@ namespace FSM
             }
             else if(Input.GetKeyDown(KeyCode.Space))//跳跃
             {
-
+                myFSM.SetState(StateKind.Jump);
+                OnExit();
+                myFSM.CurrentState.OnEnter();
             }   
             else if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))//移动
             {
@@ -89,6 +91,7 @@ namespace FSM
             //下坠同样整合在Move状态中
             if (!myPlayer.isGrounded && myRigidBody.velocity.y < 0)
             {
+                myPlayer.animator.SetBool("isFall", true);
                 //下坠时增大重力
                 myRigidBody.gravityScale = myPlayer.fallGravity;
                 //限制最大下坠速度
@@ -97,6 +100,7 @@ namespace FSM
             }
             else
             {
+                myPlayer.animator.SetBool("isFall", false);
                 myRigidBody.gravityScale = 1;
             }
         }
@@ -138,28 +142,58 @@ namespace FSM
 
     public class JumpState : BaseState
     {
+        public Rigidbody2D myRigidBody;
+         
         public JumpState(StateMachine fsm) : base(fsm)
         {
-
+            myRigidBody = myPlayer.myRigidBody;
         }
         public override void OnEnter()
         {
-
+            //获取垂直方向速度
+            myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, myPlayer.jumpForce);
+            //暂时禁用groundsensor避免跳跃初期isgrounded仍为true
+            myPlayer.groundSensor.Disable(0.2f);
+            myPlayer.animator.SetBool("isJump", true);
         }
 
         public override void OnExit()
         {
-
+            myPlayer.animator.SetBool("isJump", false);
         }
 
         public override void OnFixedUpdate()
         {
-
+            //调用水平移动方法
+            myPlayer.MoveHorizontal();
         }
 
         public override void OnUpdate()
         {
+            if (Input.GetKeyDown(KeyCode.LeftShift))//闪避
+            {
+                myFSM.SetState(StateKind.Dash);
+                OnExit();
+                myFSM.CurrentState.OnEnter();
+            }
+            else if (false)//技能攻击
+            {
 
+            }
+            else if (false)//重攻击
+            {
+
+            }
+            else if (false)//轻攻击
+            {
+
+            }
+            else if (myRigidBody.velocity.y <= 0)//下坠时切回整合了下坠的Move状态
+            {
+                myFSM.SetState(StateKind.Move);
+                OnExit();
+                myFSM.CurrentState.OnEnter();
+            }
         }
     }
 

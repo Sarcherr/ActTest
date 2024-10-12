@@ -8,37 +8,33 @@ namespace FSM
     public class StateMachine
     {
         /// <summary>
-        /// °ó¶¨ÓÎÏ·¶ÔÏó
+        /// ç»‘å®šæ¸¸æˆå¯¹è±¡
         /// </summary>
         public GameObject myObject;
         /// <summary>
-        /// µ±Ç°×´Ì¬
+        /// å½“å‰çŠ¶æ€
         /// </summary>
         public BaseState CurrentState;
         /// <summary>
-        /// Ô¤ÊäÈëÖ¸Áî
+        /// é¢„è¾“å…¥æŒ‡ä»¤
         /// </summary>
         public StateKind PreState;
         /// <summary>
-        /// ×´Ì¬±í
+        /// çŠ¶æ€è¡¨
         /// </summary>
         public Dictionary<StateKind, BaseState> StateMap;
 
         /// <summary>
-        /// ¶¯×÷¿É·ñÈ¡Ïû
-        /// </summary>
-        private bool canCancel = true;
-        /// <summary>
-        /// Ô¤ÊäÈë´°¿Ú
+        /// é¢„è¾“å…¥çª—å£
         /// </summary>
         private float preTime = 0;
         /// <summary>
-        /// Ô¤ÊäÈë¼ÆÊ±Æ÷
+        /// é¢„è¾“å…¥è®¡æ—¶å™¨
         /// </summary>
         private float preTimer;
 
         /// <summary>
-        /// ¹¹Ôìº¯Êı(²ÎÊıÎªFSM°ó¶¨µÄÓÎÏ·¶ÔÏó)
+        /// æ„é€ å‡½æ•°(å‚æ•°ä¸ºFSMç»‘å®šçš„æ¸¸æˆå¯¹è±¡)
         /// </summary>
         /// <param name="m_object"></param>
         public StateMachine(GameObject m_object)
@@ -49,12 +45,12 @@ namespace FSM
             PreState = StateKind.Default;
         }
         /// <summary>
-        /// ÉèÖÃ×´Ì¬(²ÎÊıÊ¹ÓÃStateKindÃ¶¾Ù)
+        /// è®¾ç½®çŠ¶æ€(å‚æ•°ä½¿ç”¨StateKindæšä¸¾)
         /// </summary>
         /// <param name="stateKind"></param>
         public void SetState(StateKind stateKind)
         {
-            //×´Ì¬±íÖĞ´æÔÚÖ¸¶¨×´Ì¬ÇÒcurrentState²»ÎªÖ¸¶¨×´Ì¬Ê±ĞŞ¸Ä×´Ì¬
+            //çŠ¶æ€è¡¨ä¸­å­˜åœ¨æŒ‡å®šçŠ¶æ€ä¸”currentStateä¸ä¸ºæŒ‡å®šçŠ¶æ€æ—¶ä¿®æ”¹çŠ¶æ€
             if(StateMap.ContainsKey(stateKind))
             {
                 if(CurrentState != StateMap[stateKind])
@@ -64,43 +60,43 @@ namespace FSM
             }
             else
             {
-                Debug.Log("×´Ì¬²»´æÔÚ");
+                Debug.Log("çŠ¶æ€ä¸å­˜åœ¨");
             }
         }
         /// <summary>
-        /// Ìí¼Ó×´Ì¬(²ÎÊıÊ¹ÓÃStateKind,BaseState(×¢Òânew))
+        /// æ·»åŠ çŠ¶æ€(å‚æ•°ä½¿ç”¨StateKind,BaseState(æ³¨æ„new))
         /// </summary>
         /// <param name="stateKind"></param>
         public void AddState(StateKind stateKind, BaseState baseState)
         {
-            //×´Ì¬±íÖĞ²»´æÔÚÖ¸¶¨×´Ì¬Ê±Ìí¼Ó×´Ì¬
+            //çŠ¶æ€è¡¨ä¸­ä¸å­˜åœ¨æŒ‡å®šçŠ¶æ€æ—¶æ·»åŠ çŠ¶æ€
             if (!StateMap.ContainsKey(stateKind))
             {
                 StateMap.Add(stateKind, baseState);
             }
         }
         /// <summary>
-        /// »ñÈ¡Ô¤ÊäÈëÖ¸Áî
+        /// è·å–é¢„è¾“å…¥æŒ‡ä»¤
         /// </summary>
         public void GetPreState()
         {
-            if (Input.GetKey(KeyCode.LeftShift))//ÉÁ±Ü
+            if (Input.GetKey(KeyCode.LeftShift))//é—ªé¿
             {
                 PreState = StateKind.Dash;
             }
-            else if (false)//¼¼ÄÜ¹¥»÷
+            else if (false)//æŠ€èƒ½æ”»å‡»
             {
 
             }
-            else if (false)//ÖØ¹¥»÷
+            else if (false)//é‡æ”»å‡»
             {
 
             }
-            else if (false)//Çá¹¥»÷
+            else if (false)//è½»æ”»å‡»
             {
 
             }
-            else if (Input.GetKeyDown(KeyCode.Space))//ÌøÔ¾
+            else if (Input.GetKeyDown(KeyCode.Space))//è·³è·ƒ
             {
                 PreState = StateKind.Jump;
             }
@@ -117,24 +113,23 @@ namespace FSM
             }
         }
         /// <summary>
-        /// ×´Ì¬»ú³õÊ¼»¯(ºóĞø¿ÉÒÔÓĞÒÀ¾İ°ó¶¨¶ÔÏóµÄ·ÖÖ§)
+        /// çŠ¶æ€æœºåˆå§‹åŒ–(åç»­å¯ä»¥æœ‰ä¾æ®ç»‘å®šå¯¹è±¡çš„åˆ†æ”¯)
         /// </summary>
         public void OnEnable()
         {
-            Debug.Log("³õÊ¼»¯¿ªÊ¼");
-            //³õÊ¼»¯Ìí¼ÓÍæ¼Ò½ÇÉ«¾ßÓĞµÄ×´Ì¬
+            Debug.Log("åˆå§‹åŒ–å¼€å§‹");
+            //åˆå§‹åŒ–æ·»åŠ ç©å®¶è§’è‰²å…·æœ‰çš„çŠ¶æ€
             AddState(StateKind.Idle, new IdleState(this));
             AddState(StateKind.Move, new MoveState(this));
             AddState(StateKind.Jump, new JumpState(this));
             AddState(StateKind.Attack, new AttackState(this));
             AddState(StateKind.Dash, new DashState(this));
             AddState(StateKind.Hurt, new HurtState(this));
-            AddState(StateKind.Default, new DefaultState(this));
-            //³õÊ¼ÉèÖÃ´ı»ú×´Ì¬
+            //åˆå§‹è®¾ç½®å¾…æœºçŠ¶æ€
             SetState(StateKind.Idle);
             CurrentState.OnEnter();
 
-            Debug.Log("³õÊ¼»¯³É¹¦");
+            Debug.Log("åˆå§‹åŒ–æˆåŠŸ");
         }
         public void OnUpdate()
         {

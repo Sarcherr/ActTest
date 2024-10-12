@@ -4,76 +4,82 @@ using UnityEngine;
 
 namespace Unit
 {
-    //¼Ì³ĞµÄÊı¾İ³ÉÔ±:
-    //(×î´óÉúÃüÖµ)int maxHP;
-    //(ÒÆ¶¯ËÙ¶È)  float moveSpeed;
-    //(³¯Ïò)      int faceDir;
-    //(µ±Ç°ÉúÃüÖµ)int currentHP;
-    //(ÊÇ·ñ´¥µØ)  bool isGrounded;
-    //(´¥µØ´«¸ĞÆ÷)GroundSensor groundSensor;
+    //ç»§æ‰¿çš„æ•°æ®æˆå‘˜:
+    //(æœ€å¤§ç”Ÿå‘½å€¼)int maxHP;
+    //(ç§»åŠ¨é€Ÿåº¦)  float moveSpeed;
+    //(è·³è·ƒåŠ›åº¦)  float jumpForce
+    //(æœå‘)      int faceDir;
+    //(å½“å‰ç”Ÿå‘½å€¼)int currentHP;
+    //(æ˜¯å¦è§¦åœ°)  bool isGrounded;
+    //(è§¦åœ°ä¼ æ„Ÿå™¨)GroundSensor groundSensor;
     /// <summary>
-    /// Íæ¼Ò½ÇÉ«Àà
+    /// ç©å®¶è§’è‰²ç±»
     /// </summary>
     public class Player : Unit
     {
         /// <summary>
-        /// ÌøÔ¾Á¦¶È
+        /// ä¸‹å é‡åŠ›
         /// </summary>
-        [Header("ÌøÔ¾Á¦¶È")] public float jumpForce;
+        [Header("ä¸‹å é‡åŠ›")] public float fallGravity;
         /// <summary>
-        /// ÏÂ×¹ÖØÁ¦
+        /// æœ€å¤§ä¸‹å é€Ÿåº¦
         /// </summary>
-        [Header("ÏÂ×¹ÖØÁ¦")] public float fallGravity;
+        [Header("æœ€å¤§ä¸‹å é€Ÿåº¦")] public float maxFallSpeed;
         /// <summary>
-        /// ×î´óÏÂ×¹ËÙ¶È
+        /// é—ªé¿é€Ÿåº¦
         /// </summary>
-        [Header("×î´óÏÂ×¹ËÙ¶È")] public float maxFallSpeed;
+        [Header("é—ªé¿é€Ÿåº¦")] public float dashSpeed;
         /// <summary>
-        /// ÉÁ±ÜËÙ¶È
+        /// é—ªé¿æ—¶é—´
         /// </summary>
-        [Header("ÉÁ±ÜËÙ¶È")] public float dashSpeed;
+        [Header("é—ªé¿æ—¶é—´")] public float dashTime;
         /// <summary>
-        /// ÉÁ±ÜÊ±¼ä
+        /// é—ªé¿çª—å£æœŸ
         /// </summary>
-        [Header("ÉÁ±ÜÊ±¼ä")] public float dashTime;
+        [Header("é—ªé¿çª—å£æœŸ")] public float dashWindow;
         /// <summary>
-        /// ÉÁ±Ü´°¿ÚÆÚ
+        /// é—ªé¿å†·å´    
         /// </summary>
-        [Header("ÉÁ±Ü´°¿ÚÆÚ")] public float dashWindow;
+        [Header("é—ªé¿å†·å´")] public float dashCold;
         /// <summary>
-        /// ÉÁ±ÜÀäÈ´    
+        /// æœ€å¤§æ¶åŠ¿å€¼
         /// </summary>
-        [Header("ÉÁ±ÜÀäÈ´")] public float dashCold;
+        [Header("æœ€å¤§æ¶åŠ¿å€¼")] public int maxSP;
         /// <summary>
-        /// ×î´ó¼ÜÊÆÖµ
+        /// é¢„è¾“å…¥çª—å£    
         /// </summary>
-        [Header("×î´ó¼ÜÊÆÖµ")] public int maxSP;
-        /// <summary>
-        /// Ô¤ÊäÈë´°¿Ú    
-        /// </summary>
-        [Header("Ô¤ÊäÈë´°¿Ú ")] public float preTime;
+        [Header("é¢„è¾“å…¥çª—å£ ")] public float preTime;
 
         /// <summary>
-        /// µ±Ç°¼ÜÊÆÖµ
+        /// å½“å‰æ¶åŠ¿å€¼
         /// </summary>
         [HideInInspector] public int currentSP;
         /// <summary>
-        /// ÊÇ·ñ´¦ÓÚ¼«ÏŞÉÁ±Ü´°¿ÚÆÚ
+        /// æ˜¯å¦å¤„äºæé™é—ªé¿çª—å£æœŸ
         /// </summary>
         [HideInInspector] public bool inDashWindow;
+        /// <summary>
+        /// æ˜¯å¦å¤„äºè¢«æ”»å‡»çŠ¶æ€
+        /// </summary>
+        [HideInInspector] public bool isAttacked;
+        /// <summary>
+        /// è§’è‰²åŠ¨ç”»æœº
+        /// </summary>
+        [HideInInspector] public Animator animator;
+        /// <summary>
+        /// è§’è‰²åˆšä½“
+        /// </summary>
+        [HideInInspector] public Rigidbody2D myRigidBody;
 
         /// <summary>
-        /// ½ÇÉ«¸ÕÌå
-        /// </summary>
-        private Rigidbody2D myRigidBody;
-        /// <summary>
-        /// ½ÇÉ«×´Ì¬»ú
+        /// è§’è‰²çŠ¶æ€æœº
         /// </summary>
         private FSM.StateMachine fsm;
 
+
         void Start()
         {
-            //Êı¾İ³ÉÔ±³õÊ¼»¯
+            //æ•°æ®æˆå‘˜åˆå§‹åŒ–
             faceDir = 1;
             currentSP = 0;
             isGrounded = true;
@@ -84,6 +90,8 @@ namespace Unit
 
             fsm = new FSM.StateMachine(gameObject);
             fsm.OnEnable();
+
+            animator = GetComponent<Animator>();
         }
 
 
@@ -99,11 +107,11 @@ namespace Unit
         }
 
         /// <summary>
-        /// Ë®Æ½ÒÆ¶¯ÊäÈë
+        /// æ°´å¹³ç§»åŠ¨è¾“å…¥
         /// </summary>
         public void MoveHorizontal()
         {
-            //»ñÈ¡Ë®Æ½ÒÆ¶¯ÊäÈë,ĞŞ¸Ä³¯ÏòºÍËÙ¶È
+            //è·å–æ°´å¹³ç§»åŠ¨è¾“å…¥,ä¿®æ”¹æœå‘å’Œé€Ÿåº¦
             float inputX = Input.GetAxis("Horizontal");
 
             if (inputX > 0)

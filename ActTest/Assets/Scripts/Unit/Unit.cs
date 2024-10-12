@@ -17,6 +17,10 @@ namespace Unit
         /// 移动速度
         /// </summary>
         [Header("移动速度")] public float moveSpeed;
+        /// <summary>
+        /// 跳跃力度
+        /// </summary>
+        [Header("跳跃力度")] public float jumpForce;
 
         /// <summary>
         /// 朝向
@@ -33,7 +37,7 @@ namespace Unit
         /// <summary>
         /// 触底传感器
         /// </summary>
-        [HideInInspector] protected GroundSensor groundSensor;
+        [HideInInspector] public GroundSensor groundSensor;
 
         public void GetGroundState()
         {

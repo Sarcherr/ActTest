@@ -3,7 +3,7 @@ using UnityEngine;
 namespace FSM
 {
     /// <summary>
-    /// ×´Ì¬»ùÀà
+    /// çŠ¶æ€åŸºç±»
     /// </summary>
     public abstract class BaseState
     {
@@ -23,7 +23,7 @@ namespace FSM
     }
 
     /// <summary>
-    /// ×´Ì¬ÖÖÀàÃ¶¾Ù
+    /// çŠ¶æ€ç§ç±»æšä¸¾
     /// </summary>
     public enum StateKind
     {
