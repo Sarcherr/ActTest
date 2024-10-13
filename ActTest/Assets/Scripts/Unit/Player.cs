@@ -78,12 +78,15 @@ namespace Unit
         /// 角色刚体
         /// </summary>
         [HideInInspector] public Rigidbody2D myRigidBody;
+        /// <summary>
+        /// 
+        /// </summary>
+        [HideInInspector] public GameObject attackRange;
 
         /// <summary>
         /// 角色状态机
         /// </summary>
         private FSM.StateMachine fsm;
-
 
         void Start()
         {
@@ -100,6 +103,11 @@ namespace Unit
             fsm.OnEnable();
 
             animator = GetComponent<Animator>();
+
+            if (animator != null )
+            {
+                Debug.Log("Find Animator");
+            }
         }
 
 

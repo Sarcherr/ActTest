@@ -31,14 +31,13 @@ namespace FSM
         Move,
         Jump,
         Attack,
+        Attack_normol,
+        Attack_heavy,
+        Attack_skill_1,
+        Attack_skill_2,
         Dash,
         Hurt,
         Dead,
         Default
-    }
-
-    public enum AttackKind
-    {
-
     }
 }

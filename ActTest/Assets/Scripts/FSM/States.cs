@@ -12,14 +12,16 @@ namespace FSM
         }
         public override void OnEnter()
         {
-            Debug.Log(myPlayer.isGrounded);
             Debug.Log("Idle Enter");
+
+            myPlayer.animator.SetBool("isIdle", true);
         }
 
         public override void OnExit()
         {
-            Debug.Log(myPlayer.isGrounded);
             Debug.Log("Idle Exit");
+
+            myPlayer.animator.SetBool("isIdle", false);
         }
 
         public override void OnFixedUpdate()
@@ -55,7 +57,7 @@ namespace FSM
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }   
-            else if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D))//移动
+            else if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || !myPlayer.isGrounded)//移动
             {
                 myFSM.SetState(StateKind.Move);
                 OnExit();
@@ -77,6 +79,15 @@ namespace FSM
         public override void OnEnter()
         {
             Debug.Log("Move Enter");
+
+            if (!myPlayer.isGrounded && myRigidBody.velocity.y < 0)
+            {
+                myPlayer.animator.SetBool("isFall", true);
+            }
+            else
+            {
+                myPlayer.animator.SetBool("isMove", true);
+            }
         }
 
         public override void OnExit()
@@ -84,6 +95,9 @@ namespace FSM
             //保险,防止落地时OnUpdate未恢复重力
             myRigidBody.gravityScale = 1;
             Debug.Log("Move Exit");
+
+            myPlayer.animator.SetBool("isFall", false);
+            myPlayer.animator.SetBool("isMove", false);
         }
 
         public override void OnFixedUpdate()
@@ -91,9 +105,10 @@ namespace FSM
             //调用水平移动方法
             myPlayer.MoveHorizontal();
             //下坠同样整合在Move状态中
-            if (!myPlayer.isGrounded && myRigidBody.velocity.y < 0)
+            if (!myPlayer.isGrounded && myRigidBody.velocity.y <= 0)
             {
                 myPlayer.animator.SetBool("isFall", true);
+                myPlayer.animator.SetBool("isMove", false);
                 //下坠时增大重力
                 myRigidBody.gravityScale = myPlayer.fallGravity;
                 //限制最大下坠速度
@@ -103,6 +118,7 @@ namespace FSM
             else
             {
                 myPlayer.animator.SetBool("isFall", false);
+                myPlayer.animator.SetBool("isMove", true);
                 myRigidBody.gravityScale = 1;
             }
         }
@@ -206,28 +222,30 @@ namespace FSM
 
     public class AttackState : BaseState
     {
+        public int attackDamage;
+
         public AttackState(StateMachine fsm) : base(fsm)
         {
 
         }
         public override void OnEnter()
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public override void OnExit()
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public override void OnFixedUpdate()
         {
-            throw new System.NotImplementedException();
+            
         }
 
         public override void OnUpdate()
         {
-            throw new System.NotImplementedException();
+            
         }
     }
 
@@ -250,6 +268,8 @@ namespace FSM
             myRigidBody.velocity = new Vector2 (myPlayer.dashSpeed * myPlayer.faceDir, 0);
 
             myPlayer.dashColdTimer = myPlayer.dashCold;
+
+            myPlayer.animator.SetBool("isDash", true);
         }
 
         public override void OnExit()
@@ -259,6 +279,8 @@ namespace FSM
             myRigidBody.velocity = new Vector2(0, 0);
             myPlayer.inDashWindow = false;
             timer = 0;
+
+            myPlayer.animator.SetBool("isDash", false);
         }
 
         public override void OnFixedUpdate()

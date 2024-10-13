@@ -27,7 +27,7 @@ namespace FSM
         /// <summary>
         /// 预输入窗口
         /// </summary>
-        private float preTime = 0;
+        private float preTime = 0.2f;
         /// <summary>
         /// 预输入计时器
         /// </summary>
