@@ -80,25 +80,21 @@ namespace FSM
         /// </summary>
         public void GetPreState()
         {
-            if (Input.GetKey(KeyCode.LeftShift))//闪避
+            if (false)//技能攻击1
             {
-                PreState = StateKind.Dash;
+                PreState = StateKind.Attack_skill_1;
             }
-            else if (false)//技能攻击
+            else if (false)//技能攻击2
             {
-
+                PreState = StateKind.Attack_skill_2;
             }
-            else if (false)//重攻击
+            else if (Input.GetMouseButtonDown(2))//重攻击
             {
-
+                PreState = StateKind.Attack_heavy;
             }
-            else if (false)//轻攻击
+            else if (Input.GetMouseButtonDown(1))//轻攻击
             {
-
-            }
-            else if (Input.GetKeyDown(KeyCode.Space))//跳跃
-            {
-                PreState = StateKind.Jump;
+                PreState = StateKind.Attack_normal;
             }
 
             if (PreState != StateKind.Default)
@@ -122,7 +118,10 @@ namespace FSM
             AddState(StateKind.Idle, new IdleState(this));
             AddState(StateKind.Move, new MoveState(this));
             AddState(StateKind.Jump, new JumpState(this));
-            AddState(StateKind.Attack, new AttackState(this));
+            AddState(StateKind.Attack_normal, new AttackState_normal(this));
+            AddState(StateKind.Attack_heavy, new AttackState_heavy(this));
+            AddState(StateKind.Attack_skill_1, new AttackState_skill_1(this));
+            AddState(StateKind.Attack_skill_2, new AttackState_skill_2(this));
             AddState(StateKind.Dash, new DashState(this));
             AddState(StateKind.Hurt, new HurtState(this));
             //初始设置待机状态

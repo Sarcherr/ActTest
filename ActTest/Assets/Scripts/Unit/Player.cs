@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace Unit
 {
@@ -29,14 +30,10 @@ namespace Unit
         /// 闪避速度
         /// </summary>
         [Header("闪避速度")] public float dashSpeed;
-        /// <summary>
-        /// 闪避时间
-        /// </summary>
-        [Header("闪避时间")] public float dashTime;
-        /// <summary>
-        /// 闪避窗口期
-        /// </summary>
-        [Header("闪避窗口期")] public float dashWindow;
+        //闪避时间
+        //[Header("闪避时间")] public float dashTime;
+        //闪避窗口期
+        //[Header("闪避窗口期")] public float dashWindow;
         /// <summary>
         /// 闪避冷却    
         /// </summary>
@@ -78,10 +75,19 @@ namespace Unit
         /// 角色刚体
         /// </summary>
         [HideInInspector] public Rigidbody2D myRigidBody;
+
         /// <summary>
-        /// 
+        /// 攻击判定框normal_1
         /// </summary>
-        [HideInInspector] public GameObject attackRange;
+        [HideInInspector] public GameObject attackRange_normal_1;
+        /// <summary>
+        /// 攻击判定框normal_2
+        /// </summary>
+        [HideInInspector] public GameObject attackRange_normal_2;
+        /// <summary>
+        /// 攻击判定框normal_3
+        /// </summary>
+        [HideInInspector] public GameObject attackRange_normal_3;
 
         /// <summary>
         /// 角色状态机
@@ -104,10 +110,9 @@ namespace Unit
 
             animator = GetComponent<Animator>();
 
-            if (animator != null )
-            {
-                Debug.Log("Find Animator");
-            }
+            attackRange_normal_1 = transform.Find("AttackRange_normal_1").gameObject;
+            attackRange_normal_2 = transform.Find("AttackRange_normal_2").gameObject;
+            attackRange_normal_3 = transform.Find("AttackRange_normal_3").gameObject;
         }
 
 
@@ -155,5 +160,47 @@ namespace Unit
                 dashColdTimer -= Time.deltaTime;
             }
         }
+
+        #region 用于帧事件调用(其中int参数使用1/0表示true/false)
+        /// <summary>
+        /// 终止当前状态
+        /// </summary>
+        public void End_state_now()
+        {
+            fsm.CurrentState.OnExit();
+        }
+        /// <summary>
+        /// 设置是否为极限闪避窗口期
+        /// </summary>
+        /// <param name="isTrue"></param>
+        public void Set_inDashWindow(int isTrue)
+        {
+            inDashWindow = Convert.ToBoolean(isTrue);
+        }
+        /// <summary>
+        /// 设置状态可否取消
+        /// </summary>
+        /// <param name="isTrue"></param>
+        public void Set_canCancel(int isTrue)
+        {
+            canCancel = Convert.ToBoolean(isTrue);
+        }
+        /// <summary>
+        /// 设置攻击框normal_1
+        /// </summary>
+        /// <param name="isActive"></param>
+        public void Set_normal_1(int isActive)
+        {
+            attackRange_normal_1.SetActive(Convert.ToBoolean(isActive));
+        }
+        public void Set_normal_2(int isActive)
+        {
+            attackRange_normal_2.SetActive(Convert.ToBoolean(isActive));
+        }
+        public void Set_normal_3(int isActive)
+        {
+            attackRange_normal_3.SetActive(Convert.ToBoolean(isActive));
+        }
+        #endregion
     }
 }

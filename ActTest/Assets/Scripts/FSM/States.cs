@@ -6,15 +6,19 @@ namespace FSM
 {
     public class IdleState : BaseState
     {
+        public Rigidbody2D myRigidBody;
+
         public IdleState(StateMachine fsm):base(fsm)
         {
-
+            myRigidBody = myPlayer.GetComponent<Rigidbody2D>();
         }
         public override void OnEnter()
         {
             Debug.Log("Idle Enter");
 
             myPlayer.animator.SetBool("isIdle", true);
+            //提升线性阻尼防止角色停下时滑出太远
+            myRigidBody.drag = 1;
         }
 
         public override void OnExit()
@@ -22,6 +26,7 @@ namespace FSM
             Debug.Log("Idle Exit");
 
             myPlayer.animator.SetBool("isIdle", false);
+            myRigidBody.drag = 0;
         }
 
         public override void OnFixedUpdate()
@@ -47,9 +52,11 @@ namespace FSM
             {
 
             }
-            else if(false)//轻攻击
+            else if(Input.GetMouseButtonDown(1))//轻攻击
             {
-
+                myFSM.SetState(StateKind.Attack_normal);
+                OnExit();
+                myFSM.CurrentState.OnEnter();
             }
             else if(Input.GetKeyDown(KeyCode.Space))//跳跃
             {
@@ -104,6 +111,7 @@ namespace FSM
         {
             //调用水平移动方法
             myPlayer.MoveHorizontal();
+
             //下坠同样整合在Move状态中
             if (!myPlayer.isGrounded && myRigidBody.velocity.y <= 0)
             {
@@ -125,8 +133,6 @@ namespace FSM
 
         public override void OnUpdate()
         {
-            //播放动画
-
             if (Input.GetKeyDown(KeyCode.LeftShift) && myPlayer.dashColdTimer <= 0)//闪避
             {
                 myFSM.SetState(StateKind.Dash);
@@ -249,10 +255,145 @@ namespace FSM
         }
     }
 
+    public class AttackState_normal : BaseState
+    {
+        public Rigidbody2D myRigidBody;
+        //攻击伤害
+        public int attackDamage;
+        //攻击移动幅度
+        public float attackMoveForce = 1.5f;
+        //攻击连段数
+        public int attackNum = 0;
+
+        private float attackTimer;
+
+        public AttackState_normal(StateMachine fsm) : base(fsm)
+        {
+            myRigidBody = myPlayer.GetComponent<Rigidbody2D>();
+        }
+        public override void OnEnter()
+        {
+            Debug.Log("Attack_normal_1 Enter");
+            myPlayer.animator.SetBool("isAttack_normal_1", true);
+            myRigidBody.AddForce(new Vector2(myPlayer.faceDir * attackMoveForce, 0), ForceMode2D.Impulse);
+        }
+
+        public override void OnExit()
+        {
+            if (myPlayer.isGrounded)
+            {
+                myFSM.SetState(StateKind.Idle);
+            }
+            else
+            {
+                myFSM.SetState(StateKind.Move);
+            }
+            myFSM.CurrentState.OnEnter();
+            myPlayer.animator.SetBool("isAttack_normal_1", false);
+        }
+
+        public override void OnFixedUpdate()
+        {
+
+        }
+
+        public override void OnUpdate()
+        {
+
+        }
+    }
+
+    public class AttackState_heavy : BaseState
+    {
+        public int attackDamage;
+
+        public AttackState_heavy(StateMachine fsm) : base(fsm)
+        {
+
+        }
+        public override void OnEnter()
+        {
+
+        }
+
+        public override void OnExit()
+        {
+
+        }
+
+        public override void OnFixedUpdate()
+        {
+
+        }
+
+        public override void OnUpdate()
+        {
+
+        }
+    }
+
+    public class AttackState_skill_1 : BaseState
+    {
+        public int attackDamage;
+
+        public AttackState_skill_1(StateMachine fsm) : base(fsm)
+        {
+
+        }
+        public override void OnEnter()
+        {
+
+        }
+
+        public override void OnExit()
+        {
+
+        }
+
+        public override void OnFixedUpdate()
+        {
+
+        }
+
+        public override void OnUpdate()
+        {
+
+        }
+    }
+
+    public class AttackState_skill_2 : BaseState
+    {
+        public int attackDamage;
+
+        public AttackState_skill_2(StateMachine fsm) : base(fsm)
+        {
+
+        }
+        public override void OnEnter()
+        {
+
+        }
+
+        public override void OnExit()
+        {
+
+        }
+
+        public override void OnFixedUpdate()
+        {
+
+        }
+
+        public override void OnUpdate()
+        {
+
+        }
+    }
+
     public class DashState : BaseState
     {
         private Rigidbody2D myRigidBody;
-        private float timer;
+        //private float timer;
 
         public DashState(StateMachine fsm) : base(fsm)
         {
@@ -262,12 +403,9 @@ namespace FSM
         {
             //闪避通过给予固定冲刺速度和取消重力实现
             Debug.Log("Dash Enter");
-            timer = 0;
-            myPlayer.inDashWindow = true;
+            //timer = 0;
             myRigidBody.gravityScale = 0;
             myRigidBody.velocity = new Vector2 (myPlayer.dashSpeed * myPlayer.faceDir, 0);
-
-            myPlayer.dashColdTimer = myPlayer.dashCold;
 
             myPlayer.animator.SetBool("isDash", true);
         }
@@ -275,11 +413,20 @@ namespace FSM
         public override void OnExit()
         {
             Debug.Log("Dash Exit");
-            myObject.GetComponent<Rigidbody2D>().gravityScale = 1;
+            myRigidBody.gravityScale = 1;
             myRigidBody.velocity = new Vector2(0, 0);
-            myPlayer.inDashWindow = false;
-            timer = 0;
+            //timer = 0;
+            myPlayer.dashColdTimer = myPlayer.dashCold;
 
+            if (myPlayer.isGrounded)
+            {
+                myFSM.SetState(StateKind.Idle);
+            }
+            else
+            {
+                myFSM.SetState(StateKind.Move);
+            }
+            myFSM.CurrentState.OnEnter();
             myPlayer.animator.SetBool("isDash", false);
         }
 
@@ -290,19 +437,18 @@ namespace FSM
 
         public override void OnUpdate()
         {
-            timer += Time.deltaTime;
-            if(timer > myPlayer.dashWindow && timer <= myPlayer.dashTime)
-            {
-                //极限闪避窗口期判定
-                myPlayer.inDashWindow = false;
-            }
-            else if(timer > myPlayer.dashTime)
-            {
-                //TODO:添加检测，闪避结束后在空中切坠落，在地面切待机
-                myFSM.SetState(StateKind.Idle);
-                OnExit();
-                myFSM.CurrentState.OnEnter();  
-            }
+            //timer += Time.deltaTime;
+            //if(timer > myPlayer.dashWindow && timer <= myPlayer.dashTime)
+            //{
+            //    //极限闪避窗口期判定
+            //    myPlayer.inDashWindow = false;
+            //}
+            //else if(timer > myPlayer.dashTime)
+            //{
+            //    myFSM.SetState(StateKind.Idle);
+            //    OnExit();
+            //    myFSM.CurrentState.OnEnter();  
+            //}
         }
     }
 
