@@ -1,3 +1,4 @@
+using Boss;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -17,19 +18,21 @@ public class PlayerDetector : MonoBehaviour
     public float searchTimer = 0;  //巡逻时到达边界后延时转向
 
     private bool isChase = false;
-    private bool isAttack = false;
     private bool isSearch = true;
     [HideInInspector]public bool Dir = true;    //控制Boss的朝向,左为true
     [HideInInspector]public Vector3 vecDir = Vector3.left;  //控制朝向的向量,默认为左
 
     GameObject playerObject = GameObject.Find("Player");    //找寻player,后面换玩家object的名字
     Animator animator;
+    private BossAct.BossUpdate bossUpdate;
+    private BossAct.BossAttackMotions BossATKmotions;
     void Start()
     {
         Transform transform = GetComponent<Transform>();       
         Rigidbody2D rig2D = transform.GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
-    void Update()
+    void FixedUpdate()   
     {
         Vector3 Bossdir = transform.position;   //获取Boss位置
         Vector3 Playerdir = playerObject.transform.position;    //获取Player位置
@@ -38,40 +41,29 @@ public class PlayerDetector : MonoBehaviour
         {
             isSearch = false;
             isChase = true;
-            isAttack = false;
             ChaseR();
         }else if (P_B_distance <= chaseRadius)
         {
             isSearch = false;
             isChase = false;
-            isAttack = true;
-            AttackR();
+            BossATKmotions.ChooseMotion();
         }else if (P_B_distance > chaseRadius)
         {
             isSearch = true;
             isChase = false;
-            isAttack = false;
             Search();
         }
     }
     public void ChaseR()
     {
         faceDir();
-        animator = GetComponent<Animator>();
-        animator.SetBool("isChase", isChase);
+        animator.SetBool("chaseAnim", isChase);
         transform.position += chaseSpeed * Time.deltaTime * vecDir;
-    }
-    public void AttackR()
-    {
-        faceDir();
-        animator = GetComponent<Animator>();
-        animator.SetBool("isAttack", isAttack);
     }
     public void Search()
     {
         Vector3 direction = new Vector3();
-        animator = GetComponent<Animator>();
-        animator.SetBool("isSearch", isSearch);
+        animator.SetBool("searchAnim", isSearch);
         if (Dir)
         {
             transform.localScale = new Vector3(-1, 1, 1);
@@ -107,11 +99,13 @@ public class PlayerDetector : MonoBehaviour
         {
             transform.localScale = new Vector3(1, 1, 1);
             vecDir = Vector3.right;
+            Dir = false;
         }
         else if (bossX - playerX > 0)   //Boss在Player右侧,Boss向左
         {
             transform.localScale = new Vector3(-1, 1, 1);
             vecDir = Vector3.left;
+            Dir = true;
         }
     }
 }

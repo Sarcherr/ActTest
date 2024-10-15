@@ -27,7 +27,8 @@ namespace Boss {
                 {
                     presentMode = modeTable[bossMode];
                 }
-            }else
+            }
+            else
             {
                 Debug.Log("无此状态");
             }
@@ -40,19 +41,15 @@ namespace Boss {
                 modeTable.Add(bossMode, bossState);
             }
         }
-        public void AttackMode()
-        {
-            if (/*玩家进入侦测半径*/true)
-            {
-                 
-            }
-        }
         public void SetUp()
         {
             //初始化!!
             AddBossMode(BossMode.idle, new IdleMode(this));
             AddBossMode(BossMode.chase, new ChaseMode(this));
-            AddBossMode(BossMode.attack, new AttackMode(this));
+            AddBossMode(BossMode.attack1, new AttackMode(this));
+            AddBossMode(BossMode.attack2, new AttackMode(this));
+            AddBossMode(BossMode.attack3, new AttackMode(this));
+            AddBossMode(BossMode.throwchildren, new AttackMode(this));
             AddBossMode(BossMode.hurt, new AttackMode(this));
             AddBossMode(BossMode.shortPause, new ShortPauseMode(this));
             AddBossMode(BossMode.longPause, new LongPauseMode(this));

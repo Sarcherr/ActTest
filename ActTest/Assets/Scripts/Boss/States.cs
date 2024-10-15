@@ -6,21 +6,23 @@ namespace Boss
 {
     public class IdleMode : BossState
     {
+        PlayerDetector playerDetector;
+        Animator animator;
         public IdleMode(BossMachine BM) : base(BM)
         {
             
         }
         public override void OnStart()
         {
-            
+            playerDetector.Search();
         }
         public override void OnFixedUpdate()
         {
-            
+            playerDetector.Search();
         }
-        public override void OnDestroy()
+        public override void OnExit()
         {
-            
+            playerDetector.ChaseR();
         }
         public override void OnUpdate()
         {
@@ -29,44 +31,45 @@ namespace Boss
     }
     public class ChaseMode : BossState
     {
+        PlayerDetector playerDetector;
         public ChaseMode(BossMachine BM) : base(BM)
         {
 
         }
         public override void OnStart()
         {
-            
+            playerDetector.ChaseR();
         }
         public override void OnFixedUpdate()
         {
-
+            playerDetector.ChaseR();
         }
-        public override void OnDestroy()
+        public override void OnExit()
         {
-            
         }
         public override void OnUpdate()
         {
-
+            
         }
     }
     public class AttackMode : BossState
     {
+        PlayerDetector playerDetector;
         public AttackMode(BossMachine BM) : base(BM)
         {
 
         }
         public override void OnStart()
         {
-            
+            //后期要添加攻击动作函数
         }
         public override void OnFixedUpdate()
         {
 
         }
-        public override void OnDestroy()
+        public override void OnExit()
         {
-            
+            //血量到达阈值时切换阶段
         }
         public override void OnUpdate()
         {
@@ -87,7 +90,7 @@ namespace Boss
         {
 
         }
-        public override void OnDestroy()
+        public override void OnExit()
         {
             
         }
@@ -110,7 +113,7 @@ namespace Boss
         {
 
         }
-        public override void OnDestroy()
+        public override void OnExit()
         {
             
         }
@@ -133,7 +136,7 @@ namespace Boss
         {
 
         }
-        public override void OnDestroy()
+        public override void OnExit()
         {
             
         }
@@ -156,7 +159,7 @@ namespace Boss
         {
 
         }
-        public override void OnDestroy()
+        public override void OnExit()
         {
 
         }
