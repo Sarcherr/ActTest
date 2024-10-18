@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unit;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -27,7 +28,7 @@ namespace FSM
         /// <summary>
         /// 预输入窗口
         /// </summary>
-        private float preTime = 0.2f;
+        private float preTime;
         /// <summary>
         /// 预输入计时器
         /// </summary>
@@ -41,7 +42,7 @@ namespace FSM
         {
             myObject = m_object;
             StateMap = new Dictionary<StateKind, BaseState>();
-            preTime = myObject.GetComponent<Unit.Player>().preTime;
+            //preTime = myObject.GetComponent<Unit.Player>().preTime;
             PreState = StateKind.Default;
         }
         /// <summary>
@@ -80,30 +81,38 @@ namespace FSM
         /// </summary>
         public void GetPreState()
         {
-            if (false)//技能攻击1
+            if (Input.GetKeyDown(KeyCode.LeftShift) && myObject.GetComponent<Player>().dashColdTimer <= 0)//闪避
+            {
+                PreState = StateKind.Dash;
+            }
+            else if (false)//技能攻击_1
             {
                 PreState = StateKind.Attack_skill_1;
             }
-            else if (false)//技能攻击2
+            else if (false)//技能攻击_2
             {
                 PreState = StateKind.Attack_skill_2;
             }
-            else if (Input.GetMouseButtonDown(2))//重攻击
+            else if (Input.GetMouseButtonDown(1))//重攻击
             {
                 PreState = StateKind.Attack_heavy;
             }
-            else if (Input.GetMouseButtonDown(1))//轻攻击
+            else if (Input.GetMouseButtonDown(0))//轻攻击
             {
                 PreState = StateKind.Attack_normal;
+            }
+            else if (Input.GetKeyDown(KeyCode.Space))//跳跃
+            {
+                PreState = StateKind.Jump;
             }
 
             if (PreState != StateKind.Default)
             {
-                preTimer += Time.deltaTime;
+                preTimer -= Time.deltaTime;
 
-                if(preTimer > preTime)
+                if(preTimer < 0)
                 {
-                    preTimer = 0;
+                    preTimer = preTime;
                     PreState = StateKind.Default;
                 }
             }
@@ -133,7 +142,7 @@ namespace FSM
         public void OnUpdate()
         {
             CurrentState.OnUpdate();
-            GetPreState();
+            //GetPreState();
         }
         public void OnFixedUpdate()
         {

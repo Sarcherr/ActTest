@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using System.Xml.Serialization;
 
 namespace Unit
 {
@@ -26,6 +27,20 @@ namespace Unit
         /// 最大下坠速度
         /// </summary>
         [Header("最大下坠速度")] public float maxFallSpeed;
+
+        /// <summary>
+        /// 攻击连段窗口期
+        /// </summary>
+        [Header("攻击连段窗口期")] public float attackTime;
+        /// <summary>
+        /// 普通(轻)攻击伤害
+        /// </summary>
+        [Header("普通(轻)攻击伤害")] public int attackDamage_normal;
+        /// <summary>
+        /// 普通(轻)攻击移动幅度
+        /// </summary>
+        [Header("普通(轻)攻击移动幅度")] public float attackMoveForce_normal = 1.5f;
+
         /// <summary>
         /// 闪避速度
         /// </summary>
@@ -39,34 +54,64 @@ namespace Unit
         /// </summary>
         [Header("闪避冷却")] public float dashCold;
         /// <summary>
+        /// 前闪获得架势值
+        /// </summary>
+        [Header("前闪获得架势值")] public int dashGain_SP;
+        /// <summary>
+        /// 后闪获得血瓶条
+        /// </summary>
+        [Header("后闪获得血瓶条")] public int dashGain_Cure;
+
+        /// <summary>
         /// 最大架势值
         /// </summary>
         [Header("最大架势值")] public int maxSP;
         /// <summary>
+        /// 最大血瓶条
+        /// </summary>
+        [Header("最大血瓶条")] public int maxCure;
+
+        /// <summary>
         /// 预输入窗口    
         /// </summary>
-        [Header("预输入窗口 ")] public float preTime;
+        //[Header("预输入窗口 ")] public float preTime;
 
         /// <summary>
         /// 当前架势值
         /// </summary>
-        [HideInInspector] public int currentSP;
+        [HideInInspector] public int currentSP = 0;
+        /// <summary>
+        /// 当前血瓶条
+        /// </summary>
+        [HideInInspector] public int currentCure = 0;
+        /// <summary>
+        /// 攻击连段计时
+        /// </summary>
+        [HideInInspector] public float attackTimer = 0;
         /// <summary>
         /// 闪避冷却计时
         /// </summary>
-        [HideInInspector] public float dashColdTimer;
+        [HideInInspector] public float dashColdTimer = 0;
         /// <summary>
-        /// 是否处于极限闪避窗口期
+        /// 是否处于极限闪避窗口期(前)
         /// </summary>
-        [HideInInspector] public bool inDashWindow;
+        [HideInInspector] public bool inDashWindow = false;
+        /// <summary>
+        /// 是否处于极限闪避窗口期(后)
+        /// </summary>
+        [HideInInspector] public bool inDashWindow_back = false;
         /// <summary>
         /// 是否处于被攻击状态
         /// </summary>
-        [HideInInspector] public bool isAttacked;
+        [HideInInspector] public bool isAttacked = false;
         /// <summary>
         /// 当前状态可否取消(只用于闪避攻击等)
         /// </summary>
-        [HideInInspector] public bool canCancel;
+        [HideInInspector] public bool canCancel = true;
+        /// <summary>
+        /// 是否处于霸体状态
+        /// </summary>
+        [HideInInspector] public bool isUnstoppable = false;
         /// <summary>
         /// 角色动画机
         /// </summary>
@@ -98,9 +143,6 @@ namespace Unit
         {
             //数据成员初始化
             faceDir = 1;
-            currentSP = 0;
-            isGrounded = true;
-            inDashWindow = false;
 
             groundSensor = transform.Find("GroundSensor").GetComponent<GroundSensor>();
             myRigidBody = GetComponent<Rigidbody2D>();
@@ -121,7 +163,13 @@ namespace Unit
             fsm.OnUpdate();
 
             GetGroundState();
+            AttackTimeCount();
             DashColdDown();
+
+            if(Input.GetKeyDown(KeyCode.R))
+            {
+                Debug.Log(fsm.CurrentState);
+            }
         }
 
         void FixedUpdate()
@@ -151,6 +199,17 @@ namespace Unit
         }
 
         /// <summary>
+        /// 攻击连段计时
+        /// </summary>
+        public void AttackTimeCount()
+        {
+            if(attackTimer > 0)
+            {
+                attackTimer -= Time.deltaTime;
+            }
+        }
+
+        /// <summary>
         /// 闪避冷却
         /// </summary>
         public void DashColdDown()
@@ -158,6 +217,41 @@ namespace Unit
             if(dashColdTimer > 0)
             {
                 dashColdTimer -= Time.deltaTime;
+            }
+        }
+
+        /// <summary>
+        /// 受伤
+        /// </summary>
+        /// <param name="damage"></param>
+        public void Hurt(int damage)
+        {
+            currentHP -= damage;
+
+            if(currentHP < 0)
+            {
+                //死亡
+            }
+            else if(!isUnstoppable)
+            {
+                //受击
+            }
+        }
+
+        /// <summary>
+        /// 极限闪避
+        /// </summary>
+        public void UltimateEvasion(bool ahead)
+        {
+            if(ahead)
+            {
+                int _currentSP = currentSP + dashGain_SP;
+                currentSP = (int)MathF.Min(_currentSP, maxSP);
+            }
+            else
+            {
+                int _currentCure = currentCure + dashGain_Cure;
+                currentCure = (int)MathF.Min(_currentCure, maxCure);
             }
         }
 
@@ -184,6 +278,15 @@ namespace Unit
         public void Set_canCancel(int isTrue)
         {
             canCancel = Convert.ToBoolean(isTrue);
+            Debug.Log("canCancel:" + Convert.ToBoolean(isTrue));
+        }
+        /// <summary>
+        /// 设置霸体状态
+        /// </summary>
+        /// <param name="isTrue"></param>
+        public void Set_isUnstoppable(int isTrue)
+        {
+            isUnstoppable = Convert.ToBoolean(isTrue);
         }
         /// <summary>
         /// 设置攻击框normal_1
