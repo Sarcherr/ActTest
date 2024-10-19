@@ -7,19 +7,16 @@ public class BabyAction : MonoBehaviour
 {
     [Header("附生兽血量")] public float babyHP;
     [Header("附生兽速度")] public float babySpeed;
-    [Header("附生兽攻击力")] public float babyATK;
+    [Header("附生兽爆炸伤害")] public float boomATK;
     [Header("附生兽运动速度")] public float speed;
-    [Header("ATK1造成的伤害")] public float atk1Harm;
-    [Header("ATK2造成的伤害")] public float atk2Harm;
-    [Header("追击半径,半径以外一律追击,以内一律攻击")] public float chaseRadius;
+    [Header("自爆半径,半径以外一律追击,以内瞬间爆炸")] public float boomRadius;
     [HideInInspector] public bool Dir = true;    //控制附生兽的朝向,左为true
     [HideInInspector] public Vector3 vecDir = Vector3.left;  //控制朝向的向量,默认为左
-    private bool isATK;
+    [Header("玩家给附生兽造成的伤害")] private float deltahp;
     private bool isMove;
-    private bool isHurt;
-    private bool isDead;
-    private float deltahp;  //玩家的攻击力,即给附生兽造成的伤害
+    private bool isBoom;
 
+    BossAct.ThrowChildren throwBaby;
     GameObject playerObject;
     Rigidbody2D rigid;
     Animator anim;
@@ -27,10 +24,7 @@ public class BabyAction : MonoBehaviour
     public enum ATKtypes   //附生兽行动类型
     {
         move = 0,   //移动(靠近玩家)
-        atk1 = 1,   //第一种攻击方式
-        atk2 = 2,   //第二种
-        hurt = 3,   //受击
-        dead = -1    //死亡
+        boom = 1,   //靠近玩家后自爆
     }
     void Start()
     {
@@ -42,56 +36,16 @@ public class BabyAction : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (isMove)
-        {
-            type = ATKtypes.move;
-        }
+        ReachPlayer();
         switch (type)
         {
             case ATKtypes.move:
                 {
-                    Move();
-                    break;
-                }
-            case ATKtypes.atk1:
+                    Move(); break;
+                }     
+            case ATKtypes.boom:
                 {
-                    isATK = true;
-                    SendMessage("此处填玩家受击函数", atk1Harm);
-                    anim.SetBool("BabyAtk1", isATK);
-                    isATK = false;
-                    isMove = true;
-                    type = ATKtypes.move;
-                    break;
-                }
-            case ATKtypes.atk2:
-                {
-                    isATK = true;
-                    SendMessage("此处填玩家受击函数", atk2Harm);
-                    anim.SetBool("BabyAtk2", isATK);
-                    isATK = false;
-                    isMove = true;
-                    type = ATKtypes.move;
-                    break;
-                }
-            case ATKtypes.hurt:
-                {
-                    isHurt = true;
-                    babyHP -= deltahp;
-                    anim.SetBool("BabyHurt", isHurt);
-                    isHurt = false;
-                    isMove = true;
-                    if (babyHP <= 0)
-                    {
-                        type = ATKtypes.dead;
-                        isDead = true;
-                    }
-                    break;
-                }
-            case ATKtypes.dead:
-                {
-                    anim.SetBool("BabyDead", isDead);
-                    Destroy(gameObject);
-                    break;
+                    Boom(); break;
                 }
         }
     }
@@ -105,31 +59,40 @@ public class BabyAction : MonoBehaviour
             rigid.velocity = new Vector3(rigid.velocity.x, 0, transform.position.z);    //y轴速度归零
         }
     }
-    void ReachPlayer()
+    void ReachPlayer()  //计算距离,判断移动或自爆
     {
         Vector3 babyPos = transform.position;
         Vector3 playerPos = playerObject.transform.position;
         float distance = (babyPos - playerPos).magnitude;
-        if (distance <= chaseRadius)
+        if (distance <= boomRadius)
         {
-            int ATKindex = Random.Range(0, 2);
-            if (ATKindex == 0)
-            {
-                type = ATKtypes.atk1;
-            }else if (ATKindex == 1)
-            {
-                type = ATKtypes.atk2;
-            }
-        }else
+            type = ATKtypes.boom;
+        }
+        else
         {
             type = ATKtypes.move;
         }
     }
     public void Move()
     {
+        isMove = true; anim.SetBool("isMove", isMove);
+        isBoom = false; anim.SetBool("isATK", isBoom);
         faceDir();
-        anim.SetBool("BabyMove", true);
         transform.position += speed * Time.deltaTime * vecDir;
+    }
+    public void Boom()
+    {
+        isMove = false; anim.SetBool("isMove", isMove);
+        if (rigid.velocity.x != 0)
+        {
+            rigid.AddForce(vecDir * -1 * speed / 5, 0);    //逐渐停下
+        }
+        else
+        {
+            isBoom = true; anim.SetBool("selfBoom", isBoom);
+            gameObject.SetActive(false);
+            throwBaby.num--;
+        }
     }
     public void faceDir()   //控制附生兽在追击和攻击时一直朝向Player
     {

@@ -19,12 +19,16 @@ public class PlayerDetector : MonoBehaviour
 
     private bool isChase = false;
     private bool isSearch = true;
+    private bool hasDetected = false;   //在发现玩家后设为true,此时不再进入巡逻状态
+    public bool isState = false;       //判断是否进入二阶段
+
     [HideInInspector]public bool Dir = true;    //控制Boss的朝向,左为true
     [HideInInspector]public Vector3 vecDir = Vector3.left;  //控制朝向的向量,默认为左
     GameObject playerObject;
     Animator animator;
     private BossAct.BossUpdate bossUpdate;
     private BossAct.BossAttackMotions BossATKmotions;
+    private BossAct.BossAttackMotions2 BossATKMotions2;
     void Start()
     {
         Transform transform = GetComponent<Transform>();       
@@ -33,34 +37,60 @@ public class PlayerDetector : MonoBehaviour
         BossATKmotions = GetComponent<BossAct.BossAttackMotions>();
         animator = GetComponent<Animator>();
         playerObject = GameObject.Find("Player");    //找寻player,后面换玩家object的名字
+        animator.SetInteger("isPause", 0);
     }
     void FixedUpdate()   
     {
         Vector3 Bossdir = transform.position;   //获取Boss位置
         Vector3 Playerdir = playerObject.transform.position;    //获取Player位置
         P_B_distance = Vector3.Distance(Bossdir, Playerdir);
-        if (P_B_distance <= chaseRadius && P_B_distance > attackRadius)
+        if (P_B_distance <= chaseRadius && P_B_distance > attackRadius) //追
         {
-            isSearch = false;
-            isChase = true;
+            hasDetected = true; animator.SetBool("hasDetected", hasDetected);
+            isSearch = false; animator.SetBool("isSearch", isSearch);
+            isChase = true; animator.SetBool("isChase", isChase);
             ChaseR();
-        }else if (P_B_distance <= chaseRadius)
+        }
+        else if (P_B_distance <= chaseRadius)  //攻击
         {
             isSearch = false;
             isChase = false;
-            BossATKmotions.ChooseMotion();
-        }else if (P_B_distance > chaseRadius)
+            if (!isState)
+            {
+                BossATKmotions.FixedUpdate();
+            }
+            else if (isState)
+            {
+                int i = Random.Range(0, 2);
+                if (i == 0)
+                {
+                    BossATKmotions.FixedUpdate();
+                }
+                else if (i == 1)
+                {
+                    BossATKMotions2.FixedUpdate();
+                }
+            }
+        }    
+        else if (P_B_distance > chaseRadius)   //巡逻
         {
             isSearch = true;
             isChase = false;
-            Search();
+            if (hasDetected)
+            {
+                ChaseR();
+            }
+            else if (!hasDetected)
+            {
+                Search();
+            }
         }
     }
     public void ChaseR()
     {
         faceDir();
         bossUpdate.ToughRecovery();
-        animator.SetBool("chaseAnim", isChase);
+        animator.SetBool("isChase", isChase);
         transform.position += chaseSpeed * Time.deltaTime * vecDir;
     }
     public void Search()

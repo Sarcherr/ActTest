@@ -8,7 +8,8 @@ namespace BossAct
     {
         [Header("甩出点和中心点的x轴相对距离")] public float deltaX;
         [Header("甩出点和中心点的y轴相对距离")] public float deltaY;
-        
+        [Header("统计在场附生兽数量")] public int num;
+
         //Boss甩出附生兽的函数(核心部分应当挂载在附生兽上)
         [HideInInspector] public float throwRotation;     //甩出时的角度
         public float midDis = 5;            //距离的分界线,当距离较近时角度较高,反之较低
@@ -19,15 +20,12 @@ namespace BossAct
         GameObject playerObject;    //找玩家
         PlayerDetector playerDetector;
         Rigidbody2D rigid;
-        Animator animator;
         public Transform prefabBaby;
         public float throwTime = 1.5f;      //从甩出到落地花费的时间
                                             //(按照我玩过的游戏)任何情况下附生兽从甩出到落地花费的时间都是一样的
         void Start()
         {
-            animator = GetComponent<Animator>();
             Transform transform = GetComponent<Transform>();
-            rigid = GetComponent<Rigidbody2D>();
             playerObject = GameObject.Find("Player");
         }
         public void OnThrow()
@@ -50,7 +48,7 @@ namespace BossAct
             //附生兽出现,发射!
             Quaternion quaternion = Quaternion.Euler(direction.x, direction.y, direction.z);
             Transform baby = Instantiate(prefabBaby, pos, quaternion);
-            animator.SetBool("throwBabyAnim", true);
+            num++;
         }
     }
 }

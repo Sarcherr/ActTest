@@ -15,7 +15,7 @@ namespace BossAct
         Boss长硬直时间 float longBossPauseTime         */
     public class BossUpdate : BossClasses
     {
-        [Header("Boss当前生命值")][HideInInspector] public float preBhp;
+        [Header("Boss当前生命值")][HideInInspector] public float preBhp; //低于60%时切阶段
         [Header("Boss当前韧性值")][HideInInspector] public float Btough;
         [Header("Boss是否被普攻")][HideInInspector] public bool getSimpleAtk;
         [Header("Boss是否被重击")][HideInInspector] public bool getHardAtk;
