@@ -10,17 +10,14 @@ public class AttackRange : MonoBehaviour
     {
         if(collision.CompareTag("Enemy") && !targets.Contains(collision.gameObject))
         {
-            targets.Add(collision.gameObject);   
+            targets.Add(collision.gameObject);
+            //对目标造成伤害
+
         }
     }
 
     private void OnDisable()
     {
-        foreach(GameObject target in targets)
-        {
-            //造成伤害
-        }
-
         targets.Clear();
     }
 }

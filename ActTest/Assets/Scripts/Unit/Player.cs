@@ -85,6 +85,10 @@ namespace Unit
         /// </summary>
         [HideInInspector] public int currentCure = 0;
         /// <summary>
+        /// 遭受伤害
+        /// </summary>
+        [HideInInspector] public int damageToTake = 0;
+        /// <summary>
         /// 攻击连段计时
         /// </summary>
         [HideInInspector] public float attackTimer = 0;
@@ -100,6 +104,10 @@ namespace Unit
         /// 是否处于极限闪避窗口期(后)
         /// </summary>
         [HideInInspector] public bool inDashWindow_back = false;
+        /// <summary>
+        /// 是否落地
+        /// </summary>
+        [HideInInspector] public bool hasFall = false;
         /// <summary>
         /// 是否处于被攻击状态
         /// </summary>
@@ -231,11 +239,19 @@ namespace Unit
             if(currentHP < 0)
             {
                 //死亡
+                End_state_now();
+                fsm.SetState(FSM.StateKind.Dead);
+                fsm.CurrentState.OnEnter();
             }
             else if(!isUnstoppable)
             {
                 //受击
+                End_state_now();
+                fsm.SetState(FSM.StateKind.Hurt);
+                fsm.CurrentState.OnEnter();
             }
+
+            
         }
 
         /// <summary>
@@ -256,6 +272,14 @@ namespace Unit
         }
 
         #region 用于帧事件调用(其中int参数使用1/0表示true/false)
+        /// <summary>
+        /// 播放移动动画
+        /// </summary>
+        public void Play_move()
+        {
+            animator.Play("Move_player");
+        }
+
         /// <summary>
         /// 终止当前状态
         /// </summary>

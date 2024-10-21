@@ -29,6 +29,7 @@ namespace FSM
     {
         Idle,
         Move,
+        Fall,
         Jump,
         Attack_normal,
         Attack_heavy,

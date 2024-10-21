@@ -17,10 +17,6 @@ namespace FSM
         /// </summary>
         public BaseState CurrentState;
         /// <summary>
-        /// 预输入指令
-        /// </summary>
-        public StateKind PreState;
-        /// <summary>
         /// 状态表
         /// </summary>
         public Dictionary<StateKind, BaseState> StateMap;
@@ -42,8 +38,6 @@ namespace FSM
         {
             myObject = m_object;
             StateMap = new Dictionary<StateKind, BaseState>();
-            //preTime = myObject.GetComponent<Unit.Player>().preTime;
-            PreState = StateKind.Default;
         }
         /// <summary>
         /// 设置状态(参数使用StateKind枚举)
@@ -77,47 +71,6 @@ namespace FSM
             }
         }
         /// <summary>
-        /// 获取预输入指令
-        /// </summary>
-        public void GetPreState()
-        {
-            if (Input.GetKeyDown(KeyCode.LeftShift) && myObject.GetComponent<Player>().dashColdTimer <= 0)//闪避
-            {
-                PreState = StateKind.Dash;
-            }
-            else if (false)//技能攻击_1
-            {
-                PreState = StateKind.Attack_skill_1;
-            }
-            else if (false)//技能攻击_2
-            {
-                PreState = StateKind.Attack_skill_2;
-            }
-            else if (Input.GetMouseButtonDown(1))//重攻击
-            {
-                PreState = StateKind.Attack_heavy;
-            }
-            else if (Input.GetMouseButtonDown(0))//轻攻击
-            {
-                PreState = StateKind.Attack_normal;
-            }
-            else if (Input.GetKeyDown(KeyCode.Space))//跳跃
-            {
-                PreState = StateKind.Jump;
-            }
-
-            if (PreState != StateKind.Default)
-            {
-                preTimer -= Time.deltaTime;
-
-                if(preTimer < 0)
-                {
-                    preTimer = preTime;
-                    PreState = StateKind.Default;
-                }
-            }
-        }
-        /// <summary>
         /// 状态机初始化(后续可以有依据绑定对象的分支)
         /// </summary>
         public void OnEnable()
@@ -126,6 +79,7 @@ namespace FSM
             //初始化添加玩家角色具有的状态
             AddState(StateKind.Idle, new IdleState(this));
             AddState(StateKind.Move, new MoveState(this));
+            AddState(StateKind.Fall, new FallState(this));
             AddState(StateKind.Jump, new JumpState(this));
             AddState(StateKind.Attack_normal, new AttackState_normal(this));
             AddState(StateKind.Attack_heavy, new AttackState_heavy(this));
