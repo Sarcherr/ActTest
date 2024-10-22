@@ -22,19 +22,19 @@ AnimationClip:
     curve:
     - time: 0
       value: {fileID: 21300000, guid: f7fe5244254d34342b603620b4d7c4be, type: 3}
-    - time: 0.06666667
+    - time: 0.083333336
       value: {fileID: 21300000, guid: fd8d82e5dd7fd7441abdde73ec678d87, type: 3}
-    - time: 0.13333334
+    - time: 0.16666667
       value: {fileID: 21300000, guid: c16802a0c1020984392b6d9c7cad09bc, type: 3}
-    - time: 0.2
+    - time: 0.21666667
       value: {fileID: 21300000, guid: af32c2b848d8f4c499daf9e8add8f0e3, type: 3}
     - time: 0.26666668
       value: {fileID: 21300000, guid: bdd4689afff25a54ba34bf82a3f700bd, type: 3}
-    - time: 0.33333334
+    - time: 0.31666666
       value: {fileID: 21300000, guid: afc668a0bad3161419ff3c8f496c76d2, type: 3}
-    - time: 0.4
+    - time: 0.38333333
       value: {fileID: 21300000, guid: bc2bc19119349784eaa64dfe2a09d639, type: 3}
-    - time: 0.46666667
+    - time: 0.45
       value: {fileID: 21300000, guid: 9888c1beca67eaa47a1ecbc570dbc5ad, type: 3}
     attribute: m_Sprite
     path: 
@@ -71,7 +71,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.53333336
+    m_StopTime: 0.5
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -92,34 +92,34 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.26666668
-    functionName: Set_normal_1
+    functionName: Set_canCancel
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 1
+    intParameter: 0
     messageOptions: 0
   - time: 0.26666668
-    functionName: Set_canCancel
+    functionName: Set_normal_1
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 0
+    intParameter: 1
     messageOptions: 0
-  - time: 0.4
+  - time: 0.36666667
     functionName: Set_normal_1
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.4
+  - time: 0.36666667
     functionName: Set_canCancel
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 1
     messageOptions: 0
-  - time: 0.53333336
+  - time: 0.5
     functionName: End_state_now
     data: 
     objectReferenceParameter: {fileID: 0}

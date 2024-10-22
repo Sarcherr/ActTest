@@ -32,6 +32,7 @@ namespace FSM
         Fall,
         Jump,
         Attack_normal,
+        Attack_sky,
         Attack_heavy,
         Attack_skill_1,
         Attack_skill_2,

@@ -39,7 +39,11 @@ namespace Unit
         /// <summary>
         /// 普通(轻)攻击移动幅度
         /// </summary>
-        [Header("普通(轻)攻击移动幅度")] public float attackMoveForce_normal = 1.5f;
+        [Header("普通(轻)攻击移动幅度")] public float attackMoveForce_normal;
+        /// <summary>
+        /// 重攻击移动幅度
+        /// </summary>
+        [Header("重攻击移动幅度")] public float attackMoveForce_heavy;
 
         /// <summary>
         /// 闪避速度
@@ -109,6 +113,10 @@ namespace Unit
         /// </summary>
         [HideInInspector] public bool hasFall = false;
         /// <summary>
+        /// 是否长按重击
+        /// </summary>
+        [HideInInspector] public bool hasPull = false;
+        /// <summary>
         /// 是否处于被攻击状态
         /// </summary>
         [HideInInspector] public bool isAttacked = false;
@@ -141,6 +149,22 @@ namespace Unit
         /// 攻击判定框normal_3
         /// </summary>
         [HideInInspector] public GameObject attackRange_normal_3;
+        /// <summary>
+        /// 攻击判定框heavy
+        /// </summary>
+        [HideInInspector] public GameObject attackRange_heavy;
+        /// <summary>
+        /// 攻击判定框skill_1
+        /// </summary>
+        [HideInInspector] public GameObject attackRange_skill_1;
+        /// <summary>
+        /// 攻击判定框skill_2_1
+        /// </summary>
+        [HideInInspector] public GameObject attackRange_skill_2_1;
+        /// <summary>
+        /// 攻击判定框skill_2_2
+        /// </summary>
+        [HideInInspector] public GameObject attackRange_skill_2_2;
 
         /// <summary>
         /// 角色状态机
@@ -163,6 +187,10 @@ namespace Unit
             attackRange_normal_1 = transform.Find("AttackRange_normal_1").gameObject;
             attackRange_normal_2 = transform.Find("AttackRange_normal_2").gameObject;
             attackRange_normal_3 = transform.Find("AttackRange_normal_3").gameObject;
+            attackRange_heavy = transform.Find("AttackRange_heavy").gameObject;
+            //attackRange_skill_1 = transform.Find("AttackRange_skill_1").gameObject;
+            //attackRange_skill_2_1 = transform.Find("AttackRange_skill_2_1").gameObject;
+            //attackRange_skill_2_2 = transform.Find("AttackRange_skill_2_2").gameObject;
         }
 
 
@@ -279,7 +307,20 @@ namespace Unit
         {
             animator.Play("Move_player");
         }
-
+        /// <summary>
+        /// 播放重攻击动画
+        /// </summary>
+        public void Play_attack_heavy()
+        {
+            animator.Play("Attack_heavy_player");
+        }
+        /// <summary>
+        /// 施加位移推力(重击)
+        /// </summary>
+        public void AddImpulse()
+        {
+            myRigidBody.AddForce(new Vector2(faceDir * attackMoveForce_heavy, 0), ForceMode2D.Impulse);
+        }
         /// <summary>
         /// 终止当前状态
         /// </summary>
@@ -302,7 +343,6 @@ namespace Unit
         public void Set_canCancel(int isTrue)
         {
             canCancel = Convert.ToBoolean(isTrue);
-            Debug.Log("canCancel:" + Convert.ToBoolean(isTrue));
         }
         /// <summary>
         /// 设置霸体状态
@@ -327,6 +367,22 @@ namespace Unit
         public void Set_normal_3(int isActive)
         {
             attackRange_normal_3.SetActive(Convert.ToBoolean(isActive));
+        }
+        public void Set_heavy(int isActive)
+        {
+            attackRange_heavy.SetActive(Convert.ToBoolean(isActive));
+        }
+        public void Set_skill_1(int isActive)
+        {
+            attackRange_skill_1.SetActive(Convert.ToBoolean(isActive));
+        }
+        public void Set_skill_2_1(int isActive)
+        {
+            attackRange_skill_2_1.SetActive(Convert.ToBoolean(isActive));
+        }
+        public void Set_skill_2_2(int isActive)
+        {
+            attackRange_skill_2_2.SetActive(Convert.ToBoolean(isActive));
         }
         #endregion
     }
