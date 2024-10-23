@@ -362,8 +362,9 @@ namespace FSM
             myPlayer.Set_normal_1(0);
             myPlayer.Set_normal_2(0);
             myPlayer.Set_normal_3(0);
+            myPlayer.Set_canCancel(1);
 
-            if(!isCancel)
+            if (!isCancel)
             {
                 if (myPlayer.hasPull && myPlayer.isGrounded)
                 {
@@ -420,12 +421,6 @@ namespace FSM
             {
                 isCancel = true;
                 myFSM.SetState(StateKind.Dash);
-                OnExit();
-                myFSM.CurrentState.OnEnter();
-            }
-            else if (!myPlayer.isGrounded)//下坠
-            {
-                myFSM.SetState(StateKind.Fall);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
@@ -519,7 +514,7 @@ namespace FSM
         public override void OnEnter()
         {
             Debug.Log("Attack_heavy Enter");
-
+            isCancel = false;
             //使玩家先停下(Maybe)
             myRigidBody.velocity = Vector2.zero;
 
@@ -541,7 +536,9 @@ namespace FSM
         {
             Debug.Log("Attack_heavy Exit");
 
+            myPlayer.hasPull = false;
             myPlayer.Set_heavy(0);
+            myPlayer.Set_canCancel(1);
 
             if (!isCancel)
             {
@@ -574,12 +571,6 @@ namespace FSM
             {
                 isCancel = true;
                 myFSM.SetState(StateKind.Dash);
-                OnExit();
-                myFSM.CurrentState.OnEnter();
-            }
-            else if (!myPlayer.isGrounded)//下坠
-            {
-                myFSM.SetState(StateKind.Fall);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
