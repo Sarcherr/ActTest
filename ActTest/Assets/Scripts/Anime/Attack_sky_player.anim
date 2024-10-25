@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Attack_normal_2_player
+  m_Name: Attack_sky_player
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,19 +21,19 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 21300000, guid: 9888c1beca67eaa47a1ecbc570dbc5ad, type: 3}
+      value: {fileID: 21300000, guid: c80760ed6b4eb624580b27d8e467a639, type: 3}
+    - time: 0.025
+      value: {fileID: 21300000, guid: 33b3a9bcbd5eaab4a91234ff756129e0, type: 3}
     - time: 0.05
-      value: {fileID: 21300000, guid: a48e616bc5440c7468b1eebc4bc7e41d, type: 3}
+      value: {fileID: 21300000, guid: 2bef3f1e188cf204aabb72f2efb7fe49, type: 3}
     - time: 0.1
-      value: {fileID: 21300000, guid: 7584358489d86444ca7592b47c32c1d5, type: 3}
+      value: {fileID: 21300000, guid: 556b665cda3dec243b8bc2d7ef20466e, type: 3}
     - time: 0.15
-      value: {fileID: 21300000, guid: 2b141308abab6904aa1ffc608e43170f, type: 3}
+      value: {fileID: 21300000, guid: 1c4c9682b21192443b2e11f0485c6c46, type: 3}
     - time: 0.2
-      value: {fileID: 21300000, guid: eb0e3d80ff625e34d80bc94b04dd5069, type: 3}
-    - time: 0.25
-      value: {fileID: 21300000, guid: 47c426fbf2ffeed45a5d11aeb823ed90, type: 3}
-    - time: 0.325
-      value: {fileID: 21300000, guid: 28e7d0c86386d9243a48134b16d6cdff, type: 3}
+      value: {fileID: 21300000, guid: 48660774d1bf3f940854e7c69f4e4f60, type: 3}
+    - time: 0.225
+      value: {fileID: 21300000, guid: 6d354cc9fed51c340a5d35e7616c4b7f, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -56,19 +56,19 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 9888c1beca67eaa47a1ecbc570dbc5ad, type: 3}
-    - {fileID: 21300000, guid: a48e616bc5440c7468b1eebc4bc7e41d, type: 3}
-    - {fileID: 21300000, guid: 7584358489d86444ca7592b47c32c1d5, type: 3}
-    - {fileID: 21300000, guid: 2b141308abab6904aa1ffc608e43170f, type: 3}
-    - {fileID: 21300000, guid: eb0e3d80ff625e34d80bc94b04dd5069, type: 3}
-    - {fileID: 21300000, guid: 47c426fbf2ffeed45a5d11aeb823ed90, type: 3}
-    - {fileID: 21300000, guid: 28e7d0c86386d9243a48134b16d6cdff, type: 3}
+    - {fileID: 21300000, guid: c80760ed6b4eb624580b27d8e467a639, type: 3}
+    - {fileID: 21300000, guid: 33b3a9bcbd5eaab4a91234ff756129e0, type: 3}
+    - {fileID: 21300000, guid: 2bef3f1e188cf204aabb72f2efb7fe49, type: 3}
+    - {fileID: 21300000, guid: 556b665cda3dec243b8bc2d7ef20466e, type: 3}
+    - {fileID: 21300000, guid: 1c4c9682b21192443b2e11f0485c6c46, type: 3}
+    - {fileID: 21300000, guid: 48660774d1bf3f940854e7c69f4e4f60, type: 3}
+    - {fileID: 21300000, guid: 6d354cc9fed51c340a5d35e7616c4b7f, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.375
+    m_StopTime: 0.25
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -88,35 +88,35 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0.1
+  - time: 0.15
+    functionName: Set_sky
+    data: 
+    objectReferenceParameter: {fileID: 0}
+    floatParameter: 0
+    intParameter: 1
+    messageOptions: 0
+  - time: 0.15
     functionName: Set_canCancel
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
     messageOptions: 0
-  - time: 0.1
-    functionName: Set_normal_2
+  - time: 0.2
+    functionName: Set_sky
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
-    intParameter: 1
+    intParameter: 0
     messageOptions: 0
-  - time: 0.1875
+  - time: 0.2
     functionName: Set_canCancel
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 1
     messageOptions: 0
-  - time: 0.1875
-    functionName: Set_normal_2
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 0.375
+  - time: 0.25
     functionName: End_state_now
     data: 
     objectReferenceParameter: {fileID: 0}

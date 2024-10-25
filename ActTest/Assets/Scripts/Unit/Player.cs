@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 using System.Xml.Serialization;
+using FSM;
+using Cinemachine;
 
 namespace Unit
 {
@@ -20,6 +22,10 @@ namespace Unit
     public class Player : Unit
     {
         /// <summary>
+        /// 上升重力
+        /// </summary>
+        [Header("上升重力")] public float jumpGravity;
+        /// <summary>
         /// 下坠重力
         /// </summary>
         [Header("下坠重力")] public float fallGravity;
@@ -27,32 +33,20 @@ namespace Unit
         /// 最大下坠速度
         /// </summary>
         [Header("最大下坠速度")] public float maxFallSpeed;
+        /// <summary>
+        /// 移动停止阻力  
+        /// </summary>
+        [Header("移动停止阻力")] public float stopDrag;
+        /// <summary>
+        /// 相机回正时间(次元斩) 
+        /// </summary>
+        [Header("相机回正速度(次元斩) ")] public float ResetTime;
 
-        /// <summary>
-        /// 攻击连段窗口期
-        /// </summary>
-        [Header("攻击连段窗口期")] public float attackTime;
-        /// <summary>
-        /// 普通(轻)攻击伤害
-        /// </summary>
-        [Header("普通(轻)攻击伤害")] public int attackDamage_normal;
-        /// <summary>
-        /// 普通(轻)攻击移动幅度
-        /// </summary>
-        [Header("普通(轻)攻击移动幅度")] public float attackMoveForce_normal;
-        /// <summary>
-        /// 重攻击移动幅度
-        /// </summary>
-        [Header("重攻击移动幅度")] public float attackMoveForce_heavy;
 
         /// <summary>
         /// 闪避速度
         /// </summary>
         [Header("闪避速度")] public float dashSpeed;
-        //闪避时间
-        //[Header("闪避时间")] public float dashTime;
-        //闪避窗口期
-        //[Header("闪避窗口期")] public float dashWindow;
         /// <summary>
         /// 闪避冷却    
         /// </summary>
@@ -67,6 +61,11 @@ namespace Unit
         [Header("后闪获得血瓶条")] public int dashGain_Cure;
 
         /// <summary>
+        /// 霸体减伤幅度(0~1)
+        /// </summary>
+        [Header("霸体减伤幅度(0~1)")] public float damageScale;
+
+        /// <summary>
         /// 最大架势值
         /// </summary>
         [Header("最大架势值")] public int maxSP;
@@ -76,9 +75,85 @@ namespace Unit
         [Header("最大血瓶条")] public int maxCure;
 
         /// <summary>
-        /// 预输入窗口    
+        /// 技能选择(true登龙/false次元斩)
         /// </summary>
-        //[Header("预输入窗口 ")] public float preTime;
+        [Header("技能选择(true登龙/false次元斩)")] public bool mySkill;
+        /// <summary>
+        /// 攻击连段窗口期
+        /// </summary>
+        [Header("攻击连段窗口期")] public float attackTime;
+
+        /// <summary>
+        /// 登龙SP消耗
+        /// </summary>
+        [Header("登龙SP消耗")] public int attackConsumption_skill_1;
+        /// <summary>
+        /// 次元斩1阶SP消耗
+        /// </summary>
+        [Header("次元斩1阶SP消耗")] public int attackConsumption_skill_2_1;
+        /// <summary>
+        /// 次元斩2阶SP消耗
+        /// </summary>
+        [Header("次元斩2阶SP消耗")] public int attackConsumption_skill_2_2;
+        /// <summary>
+        /// 次元斩3阶SP消耗
+        /// </summary>
+        [Header("次元斩3阶SP消耗")] public int attackConsumption_skill_2_3;
+
+        /// <summary>
+        /// 普通(轻)攻击移动幅度
+        /// </summary>
+        [Header("普通(轻)攻击移动幅度")] public float attackMoveForce_normal;
+        /// <summary>
+        /// 重攻击移动幅度
+        /// </summary>
+        [Header("重攻击移动幅度")] public float attackMoveForce_heavy;
+        /// <summary>
+        /// 登龙1段移动幅度
+        /// </summary>
+        [Header("登龙1段移动幅度")] public float attackMoveForce_skill_1;
+
+        /// <summary>
+        /// 普通(轻)攻击伤害_1
+        /// </summary>
+        [Header("普通(轻)攻击伤害_1")] public int attackDamage_normal_1;
+        /// <summary>
+        /// 普通(轻)攻击伤害_2
+        /// </summary>
+        [Header("普通(轻)攻击伤害_2")] public int attackDamage_normal_2;
+        /// <summary>
+        /// 普通(轻)攻击伤害_3
+        /// </summary>
+        [Header("普通(轻)攻击伤害_3")] public int attackDamage_normal_3;
+        /// <summary>
+        /// 重攻击伤害
+        /// </summary>
+        [Header("重攻击伤害")] public int attackDamage_heavy;
+        /// <summary>
+        /// 空中攻击伤害
+        /// </summary>
+        [Header("空中攻击伤害")] public int attackDamage_sky;
+        /// <summary>
+        /// 技能攻击伤害_1_1(登龙1段)
+        /// </summary>
+        [Header("技能攻击伤害_1_1(登龙1段)")] public int attackDamage_skill_1_1;
+        /// <summary>
+        /// 技能攻击伤害_1_2(登龙2段)
+        /// </summary>
+        [Header("技能攻击伤害_1_2(登龙2段)")] public int attackDamage_skill_1_2;
+        /// <summary>
+        /// 技能攻击伤害_2_1(次元斩1层)
+        /// </summary>
+        [Header("技能攻击伤害_2_1(次元斩1层)")] public int attackDamage_skill_2_1;
+        /// <summary>
+        /// 技能攻击伤害_2_2(次元斩2层)
+        /// </summary>
+        [Header("技能攻击伤害_2_2(次元斩2层)")] public int attackDamage_skill_2_2;
+        /// <summary>
+        /// 技能攻击伤害_2_3(次元斩3层)
+        /// </summary>
+        [Header("技能攻击伤害_2_2(次元斩3层)")] public int attackDamage_skill_2_3;
+
 
         /// <summary>
         /// 当前架势值
@@ -89,10 +164,6 @@ namespace Unit
         /// </summary>
         [HideInInspector] public int currentCure = 0;
         /// <summary>
-        /// 遭受伤害
-        /// </summary>
-        [HideInInspector] public int damageToTake = 0;
-        /// <summary>
         /// 攻击连段计时
         /// </summary>
         [HideInInspector] public float attackTimer = 0;
@@ -100,6 +171,10 @@ namespace Unit
         /// 闪避冷却计时
         /// </summary>
         [HideInInspector] public float dashColdTimer = 0;
+        /// <summary>
+        /// 当前释放的技能
+        /// </summary>
+        [HideInInspector] public SkillHasUse skillNow = SkillHasUse.skill_default;
         /// <summary>
         /// 是否处于极限闪避窗口期(前)
         /// </summary>
@@ -117,25 +192,21 @@ namespace Unit
         /// </summary>
         [HideInInspector] public bool hasPull = false;
         /// <summary>
-        /// 是否处于被攻击状态
-        /// </summary>
-        [HideInInspector] public bool isAttacked = false;
-        /// <summary>
         /// 当前状态可否取消(只用于闪避攻击等)
         /// </summary>
         [HideInInspector] public bool canCancel = true;
+        /// <summary>
+        /// 当前可否空中攻击
+        /// </summary>
+        [HideInInspector] public bool canAttack_sky = true;
         /// <summary>
         /// 是否处于霸体状态
         /// </summary>
         [HideInInspector] public bool isUnstoppable = false;
         /// <summary>
-        /// 角色动画机
+        /// 是否处于无敌状态
         /// </summary>
-        [HideInInspector] public Animator animator;
-        /// <summary>
-        /// 角色刚体
-        /// </summary>
-        [HideInInspector] public Rigidbody2D myRigidBody;
+        [HideInInspector] public bool isInvincible = false;
 
         /// <summary>
         /// 攻击判定框normal_1
@@ -150,13 +221,21 @@ namespace Unit
         /// </summary>
         [HideInInspector] public GameObject attackRange_normal_3;
         /// <summary>
+        /// 攻击判定框sky
+        /// </summary>
+        [HideInInspector] public GameObject attackRange_sky;
+        /// <summary>
         /// 攻击判定框heavy
         /// </summary>
         [HideInInspector] public GameObject attackRange_heavy;
         /// <summary>
-        /// 攻击判定框skill_1
+        /// 攻击判定框skill_1_1
         /// </summary>
-        [HideInInspector] public GameObject attackRange_skill_1;
+        [HideInInspector] public GameObject attackRange_skill_1_1;
+        /// <summary>
+        /// 攻击判定框skill_1_2
+        /// </summary>
+        [HideInInspector] public GameObject attackRange_skill_1_2;
         /// <summary>
         /// 攻击判定框skill_2_1
         /// </summary>
@@ -165,32 +244,70 @@ namespace Unit
         /// 攻击判定框skill_2_2
         /// </summary>
         [HideInInspector] public GameObject attackRange_skill_2_2;
+        /// <summary>
+        /// 攻击判定框skill_2_3
+        /// </summary>
+        [HideInInspector] public GameObject attackRange_skill_2_3;
 
+        /// <summary>
+        /// 次元斩基准点middle
+        /// </summary>
+        [HideInInspector] public GameObject skill_2_3_middle;
+        /// <summary>
+        /// 次元斩基准点end
+        /// </summary>
+        [HideInInspector] public GameObject skill_2_3_end;
+
+        /// <summary>
+        /// 角色动画机
+        /// </summary>
+        [HideInInspector] public Animator animator;
+        /// <summary>
+        /// 角色刚体
+        /// </summary>
+        [HideInInspector] public Rigidbody2D myRigidBody;
+        /// <summary>
+        /// 角色碰撞体
+        /// </summary>
+        [HideInInspector] public Collider2D myCollider;
+        /// <summary>
+        /// 角色摄像头
+        /// </summary>
+        [HideInInspector] public CinemachineVirtualCamera myCamera;
         /// <summary>
         /// 角色状态机
         /// </summary>
-        private FSM.StateMachine fsm;
+        [HideInInspector] public StateMachine fsm;
 
         void Start()
         {
             //数据成员初始化
             faceDir = 1;
+            currentHP = maxHP;
 
             groundSensor = transform.Find("GroundSensor").GetComponent<GroundSensor>();
             myRigidBody = GetComponent<Rigidbody2D>();
+            myCollider = GetComponent<Collider2D>();
 
-            fsm = new FSM.StateMachine(gameObject);
+            fsm = new StateMachine(gameObject);
             fsm.OnEnable();
 
             animator = GetComponent<Animator>();
+            myCamera = GameObject.Find("PlayerCamera").GetComponent<CinemachineVirtualCamera>();
 
             attackRange_normal_1 = transform.Find("AttackRange_normal_1").gameObject;
             attackRange_normal_2 = transform.Find("AttackRange_normal_2").gameObject;
             attackRange_normal_3 = transform.Find("AttackRange_normal_3").gameObject;
             attackRange_heavy = transform.Find("AttackRange_heavy").gameObject;
-            //attackRange_skill_1 = transform.Find("AttackRange_skill_1").gameObject;
-            //attackRange_skill_2_1 = transform.Find("AttackRange_skill_2_1").gameObject;
-            //attackRange_skill_2_2 = transform.Find("AttackRange_skill_2_2").gameObject;
+            attackRange_sky = transform.Find("AttackRange_sky").gameObject;
+            attackRange_skill_1_1 = transform.Find("AttackRange_skill_1_1").gameObject;
+            attackRange_skill_1_2 = transform.Find("AttackRange_skill_1_2").gameObject;
+            attackRange_skill_2_1 = transform.Find("AttackRange_skill_2_1").gameObject;
+            attackRange_skill_2_2 = transform.Find("AttackRange_skill_2_2").gameObject;
+            attackRange_skill_2_3 = transform.Find("AttackRange_skill_2_3").gameObject;
+
+            skill_2_3_middle = transform.Find("skill_2_3_middle").gameObject;
+            skill_2_3_end = transform.Find("skill_2_3_end").gameObject;
         }
 
 
@@ -206,11 +323,38 @@ namespace Unit
             {
                 Debug.Log(fsm.CurrentState);
             }
+            if(Input.GetKeyDown(KeyCode.Q))
+            {
+                Hurt(0);
+            }
+            if(Input.GetKeyDown(KeyCode.E))
+            {
+                SPChange(20);
+                CureChange(20);
+            }
+            if(Input.GetKeyDown(KeyCode.F))
+            {
+                mySkill = !mySkill;
+            }
         }
 
         void FixedUpdate()
         {
             fsm.OnFixedUpdate();
+        }
+
+        public void GetGroundState()
+        {
+            if (!isGrounded && groundSensor.GetComponent<GroundSensor>().State())
+            {
+                isGrounded = true;
+                canAttack_sky = true;
+            }
+
+            if (isGrounded && !groundSensor.GetComponent<GroundSensor>().State())
+            {
+                isGrounded = false;
+            }
         }
 
         /// <summary>
@@ -231,7 +375,10 @@ namespace Unit
             }
 
             transform.localScale = new Vector3(faceDir, 1, 1);
-            myRigidBody.velocity = new Vector2(inputX * moveSpeed, myRigidBody.velocity.y);
+            if(inputX != 0)
+            {
+                myRigidBody.velocity = new Vector2(faceDir * moveSpeed, myRigidBody.velocity.y);
+            }
         }
 
         /// <summary>
@@ -257,49 +404,251 @@ namespace Unit
         }
 
         /// <summary>
+        /// 释放技能
+        /// </summary>
+        public bool UseSkill()
+        {
+            
+            if(mySkill)
+            {
+                if(currentSP >= attackConsumption_skill_1)
+                {
+                    SPChange(-attackConsumption_skill_1);
+
+                    fsm.SetState(StateKind.Attack_skill_1);
+                    fsm.CurrentState.OnEnter();
+
+                    return true;
+                }
+                else
+                {
+                    Debug.Log("SP不够喵");
+                    //ui效果提示等
+
+                    return false;
+                }
+            }
+            else
+            {
+                if (currentSP >= attackConsumption_skill_2_1)
+                {
+                    //判断阶数
+                    if(currentSP >= attackConsumption_skill_2_3)
+                    {
+                        SPChange(-attackConsumption_skill_2_3);
+                        skillNow = SkillHasUse.skill_2_3;
+                    }
+                    else if(currentSP >= attackConsumption_skill_2_2)
+                    {
+                        SPChange(-attackConsumption_skill_2_2);
+                        skillNow = SkillHasUse.skill_2_2;
+                    }
+                    else
+                    {
+                        SPChange(-attackConsumption_skill_2_1);
+                        skillNow = SkillHasUse.skill_2_1;
+                    }
+
+                    fsm.SetState(StateKind.Attack_skill_2);
+                    fsm.CurrentState.OnEnter();
+
+                    return true;
+                }
+                else
+                {
+                    Debug.Log("SP不够喵");
+                    //ui效果提示等
+
+                    return false;
+                }
+            }
+        }
+
+        /// <summary>
+        /// SP值变化(正负可能伴随UI相关效果调用)
+        /// </summary>
+        /// <param name="spChange"></param>
+        public void SPChange(int spChange)
+        {
+            int _currentSP = currentSP + spChange;
+            currentSP = Math.Clamp(_currentSP, 0, maxSP);
+
+            //根据增减调用UI效果
+            if(spChange > 0)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+        /// <summary>
+        /// 血瓶值变化(正负可能伴随UI相关效果调用)
+        /// </summary>
+        /// <param name="cureChange"></param>
+        public void CureChange(int cureChange)
+        {
+            int _currentCure = currentCure + cureChange;
+            currentCure = Math.Clamp(_currentCure, 0, maxCure);
+
+            //根据增减调用UI效果
+            if(cureChange > 0)
+            {
+
+            }
+            else
+            {
+
+            }
+        }
+
+        /// <summary>
         /// 受伤
         /// </summary>
         /// <param name="damage"></param>
         public void Hurt(int damage)
         {
-            currentHP -= damage;
+            //极限闪避
+            if(inDashWindow || inDashWindow_back)
+            {
+                if(inDashWindow)
+                {
+                    UltimateEvasion(true);
 
-            if(currentHP < 0)
+                    Set_inDashWindow(0);
+                    End_state_now();
+                    fsm.SetState(StateKind.Dash_extreme);
+                    fsm.CurrentState.OnEnter();
+                }
+                else
+                {
+                    UltimateEvasion(false);
+
+                    Set_inDashWindow_back(0);
+                    animator.speed = 0;
+                    myRigidBody.velocity = Vector2.zero;
+                    Invoke("KeepPlay", 0.1f);
+                }
+            }
+            else if (isUnstoppable && !isInvincible)
+            {
+                currentHP -= (int)(damage * damageScale);
+            }
+            else if (!isInvincible)
+            {
+                currentHP -= damage;
+
+                //受击
+                End_state_now();
+                fsm.SetState(StateKind.Hurt);
+                fsm.CurrentState.OnEnter();
+            }
+            if (currentHP < 0)
             {
                 //死亡
                 End_state_now();
-                fsm.SetState(FSM.StateKind.Dead);
+                fsm.SetState(StateKind.Dead);
                 fsm.CurrentState.OnEnter();
             }
-            else if(!isUnstoppable)
-            {
-                //受击
-                End_state_now();
-                fsm.SetState(FSM.StateKind.Hurt);
-                fsm.CurrentState.OnEnter();
-            }
-
-            
         }
 
         /// <summary>
-        /// 极限闪避
+        /// 血瓶回血
+        /// </summary>
+        public void Heal()
+        {
+
+        }
+
+        /// <summary>
+        /// 动画恢复正常播放
+        /// </summary>
+        public void KeepPlay()
+        {
+            animator.speed = 1;
+            myRigidBody.velocity = new Vector2(-dashSpeed * faceDir, 0);
+        }
+
+        /// <summary>
+        /// 极限闪避获取资源
         /// </summary>
         public void UltimateEvasion(bool ahead)
         {
             if(ahead)
             {
-                int _currentSP = currentSP + dashGain_SP;
-                currentSP = (int)MathF.Min(_currentSP, maxSP);
+                SPChange(dashGain_SP);
             }
             else
             {
-                int _currentCure = currentCure + dashGain_Cure;
-                currentCure = (int)MathF.Min(_currentCure, maxCure);
+                CureChange(dashGain_Cure);
             }
         }
 
+        /// <summary>
+        /// 还原相机size
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerator ResetCamera()
+        {
+            float timer = 0;
+
+            while(timer < ResetTime)
+            {
+                timer += Time.deltaTime;
+                myCamera.m_Lens.OrthographicSize = Mathf.Lerp(3.95f, 6, timer/ResetTime);
+                yield return null;
+            }
+
+            myCamera.m_Lens.OrthographicSize = 6;
+        }
+
         #region 用于帧事件调用(其中int参数使用1/0表示true/false)
+        /// <summary>
+        /// 相机聚焦(1聚焦/0还原)
+        /// </summary>
+        /// <param name="isFocus"></param>
+        public void CameraFocus(int isFocus)
+        {
+            if (isFocus == 1)
+            {
+                myCamera.m_Lens.OrthographicSize = 3.95f;
+            }
+            else
+            {
+                StartCoroutine(ResetCamera());
+            }
+        }
+        public void Focus_Player()
+        {
+            myCamera.Follow = transform;
+        }
+        public void Focus_middle()
+        {
+            myCamera.Follow = skill_2_3_middle.transform;
+        }
+        public void Focus_end()
+        {
+            myCamera.Follow = skill_2_3_end.transform;
+        }
+        /// <summary>
+        /// 传送到end(次元斩)
+        /// </summary>
+        public void TP_end()
+        {
+            transform.position = skill_2_3_end.transform.position;
+        }
+        public void Set_end(int isTrue)
+        {
+            skill_2_3_end.SetActive(Convert.ToBoolean(isTrue));
+        }
+        /// <summary>
+        /// 播放待机动画
+        /// </summary>
+        public void Play_idle()
+        {
+            animator.Play("Idle_player");
+        }
         /// <summary>
         /// 播放移动动画
         /// </summary>
@@ -315,11 +664,25 @@ namespace Unit
             animator.Play("Attack_heavy_player");
         }
         /// <summary>
-        /// 施加位移推力(重击)
+        /// 施加位移推力(重攻击)
         /// </summary>
         public void AddImpulse()
         {
             myRigidBody.AddForce(new Vector2(faceDir * attackMoveForce_heavy, 0), ForceMode2D.Impulse);
+        }
+        /// <summary>
+        /// 施加位移推力(登龙)
+        /// </summary>
+        public void AddImpulse_great()
+        {
+            myRigidBody.AddForce(new Vector2(faceDir * attackMoveForce_skill_1, 0), ForceMode2D.Impulse);
+        }
+        /// <summary>
+        /// 速度归零
+        /// </summary>
+        public void ResetVelocity()
+        {
+            myRigidBody.velocity = Vector2.zero;
         }
         /// <summary>
         /// 终止当前状态
@@ -337,6 +700,14 @@ namespace Unit
             inDashWindow = Convert.ToBoolean(isTrue);
         }
         /// <summary>
+        /// 设置是否为极限闪避窗口期(后)
+        /// </summary>
+        /// <param name="isTrue"></param>
+        public void Set_inDashWindow_back(int isTrue)
+        {
+            inDashWindow_back = Convert.ToBoolean(isTrue);
+        }
+        /// <summary>
         /// 设置状态可否取消
         /// </summary>
         /// <param name="isTrue"></param>
@@ -351,6 +722,10 @@ namespace Unit
         public void Set_isUnstoppable(int isTrue)
         {
             isUnstoppable = Convert.ToBoolean(isTrue);
+        }
+        public void Set_isInvincible(int isTrue)
+        {
+            isInvincible = Convert.ToBoolean(isTrue);
         }
         /// <summary>
         /// 设置攻击框normal_1
@@ -368,13 +743,21 @@ namespace Unit
         {
             attackRange_normal_3.SetActive(Convert.ToBoolean(isActive));
         }
+        public void Set_sky(int isActive)
+        {
+            attackRange_sky.SetActive(Convert.ToBoolean(isActive));
+        }
         public void Set_heavy(int isActive)
         {
             attackRange_heavy.SetActive(Convert.ToBoolean(isActive));
         }
-        public void Set_skill_1(int isActive)
+        public void Set_skill_1_1(int isActive)
         {
-            attackRange_skill_1.SetActive(Convert.ToBoolean(isActive));
+            attackRange_skill_1_1.SetActive(Convert.ToBoolean(isActive));
+        }
+        public void Set_skill_1_2(int isActive)
+        {
+            attackRange_skill_1_2.SetActive(Convert.ToBoolean(isActive));
         }
         public void Set_skill_2_1(int isActive)
         {
@@ -384,6 +767,21 @@ namespace Unit
         {
             attackRange_skill_2_2.SetActive(Convert.ToBoolean(isActive));
         }
+        public void Set_skill_2_3(int isActive)
+        {
+            attackRange_skill_2_3.SetActive(Convert.ToBoolean(isActive));
+        }
         #endregion
     }
+}
+
+/// <summary>
+/// 被使用技能类型枚举
+/// </summary>
+public enum SkillHasUse
+{
+    skill_2_1,
+    skill_2_2, 
+    skill_2_3,
+    skill_default
 }

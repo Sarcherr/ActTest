@@ -38,18 +38,5 @@ namespace Unit
         /// ´¥µ×´«¸ÐÆ÷
         /// </summary>
         [HideInInspector] public GroundSensor groundSensor;
-
-        public void GetGroundState()
-        {
-            if (!isGrounded && groundSensor.GetComponent<GroundSensor>().State())
-            {
-                isGrounded = true;
-            }
-
-            if (isGrounded && !groundSensor.GetComponent<GroundSensor>().State())
-            {
-                isGrounded = false;
-            }
-        }
     }
 }

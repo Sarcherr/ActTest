@@ -37,6 +37,7 @@ namespace FSM
         Attack_skill_1,
         Attack_skill_2,
         Dash,
+        Dash_extreme,
         Hurt,
         Dead,
         Default

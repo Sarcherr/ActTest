@@ -6,7 +6,7 @@ AnimationClip:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Move_ready_player
+  m_Name: Hurt_player
   serializedVersion: 7
   m_Legacy: 0
   m_Compressed: 0
@@ -21,13 +21,21 @@ AnimationClip:
   - serializedVersion: 2
     curve:
     - time: 0
-      value: {fileID: 21300000, guid: 11728782d4bc52b439644737ab66afb5, type: 3}
-    - time: 0.1
-      value: {fileID: 21300000, guid: e6de408c08baae2448c6701ac4fecede, type: 3}
-    - time: 0.2
-      value: {fileID: 21300000, guid: 2e9858d4e0e1ba54395110049a743814, type: 3}
-    - time: 0.3
-      value: {fileID: 21300000, guid: 7278fdc2f4e163a499657b72d4e693d0, type: 3}
+      value: {fileID: 21300000, guid: 62628d13e3cea434dbd3919d697369e4, type: 3}
+    - time: 0.05
+      value: {fileID: 21300000, guid: a78bd5b1b0c2ceb49b2e8ac8b2aef25f, type: 3}
+    - time: 0.15
+      value: {fileID: 21300000, guid: 708d68b80cbdf1949b8472c61e2eae6e, type: 3}
+    - time: 0.25
+      value: {fileID: 21300000, guid: 90218e4cda231154bb6161f637f16ec4, type: 3}
+    - time: 0.35
+      value: {fileID: 21300000, guid: ea5dbd5617785c84d9103ab011570089, type: 3}
+    - time: 0.45
+      value: {fileID: 21300000, guid: 8e0a883927e3d2441b13992db42a4d99, type: 3}
+    - time: 0.55
+      value: {fileID: 21300000, guid: 4d4b0a40860802c47867d74e6e5bbff7, type: 3}
+    - time: 0.65
+      value: {fileID: 21300000, guid: 24b51c3a26a06304ab828ce454a44d08, type: 3}
     attribute: m_Sprite
     path: 
     classID: 212
@@ -50,16 +58,20 @@ AnimationClip:
       isIntCurve: 0
       isSerializeReferenceCurve: 0
     pptrCurveMapping:
-    - {fileID: 21300000, guid: 11728782d4bc52b439644737ab66afb5, type: 3}
-    - {fileID: 21300000, guid: e6de408c08baae2448c6701ac4fecede, type: 3}
-    - {fileID: 21300000, guid: 2e9858d4e0e1ba54395110049a743814, type: 3}
-    - {fileID: 21300000, guid: 7278fdc2f4e163a499657b72d4e693d0, type: 3}
+    - {fileID: 21300000, guid: 62628d13e3cea434dbd3919d697369e4, type: 3}
+    - {fileID: 21300000, guid: a78bd5b1b0c2ceb49b2e8ac8b2aef25f, type: 3}
+    - {fileID: 21300000, guid: 708d68b80cbdf1949b8472c61e2eae6e, type: 3}
+    - {fileID: 21300000, guid: 90218e4cda231154bb6161f637f16ec4, type: 3}
+    - {fileID: 21300000, guid: ea5dbd5617785c84d9103ab011570089, type: 3}
+    - {fileID: 21300000, guid: 8e0a883927e3d2441b13992db42a4d99, type: 3}
+    - {fileID: 21300000, guid: 4d4b0a40860802c47867d74e6e5bbff7, type: 3}
+    - {fileID: 21300000, guid: 24b51c3a26a06304ab828ce454a44d08, type: 3}
   m_AnimationClipSettings:
     serializedVersion: 2
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 0.3875
+    m_StopTime: 0.6875
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -79,17 +91,10 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 0.3875
-    functionName: Play_move
+  - time: 0.6875
+    functionName: End_state_now
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
     intParameter: 0
-    messageOptions: 0
-  - time: 0.3875
-    functionName: Set_canCancel
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 1
     messageOptions: 0

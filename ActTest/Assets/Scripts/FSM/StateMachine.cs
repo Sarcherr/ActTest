@@ -17,18 +17,13 @@ namespace FSM
         /// </summary>
         public BaseState CurrentState;
         /// <summary>
+        /// 当前状态类型
+        /// </summary>
+        public StateKind CurrentStateKind;
+        /// <summary>
         /// 状态表
         /// </summary>
         public Dictionary<StateKind, BaseState> StateMap;
-
-        /// <summary>
-        /// 预输入窗口
-        /// </summary>
-        private float preTime;
-        /// <summary>
-        /// 预输入计时器
-        /// </summary>
-        private float preTimer;
 
         /// <summary>
         /// 构造函数(参数为FSM绑定的游戏对象)
@@ -51,6 +46,7 @@ namespace FSM
                 if(CurrentState != StateMap[stateKind])
                 {
                     CurrentState = StateMap[stateKind];
+                    CurrentStateKind = stateKind;
                 }
             }
             else
@@ -82,10 +78,12 @@ namespace FSM
             AddState(StateKind.Fall, new FallState(this));
             AddState(StateKind.Jump, new JumpState(this));
             AddState(StateKind.Attack_normal, new AttackState_normal(this));
+            AddState(StateKind.Attack_sky, new AttackState_sky(this));
             AddState(StateKind.Attack_heavy, new AttackState_heavy(this));
             AddState(StateKind.Attack_skill_1, new AttackState_skill_1(this));
             AddState(StateKind.Attack_skill_2, new AttackState_skill_2(this));
             AddState(StateKind.Dash, new DashState(this));
+            AddState(StateKind.Dash_extreme, new DashState_extreme(this));
             AddState(StateKind.Hurt, new HurtState(this));
             //初始设置待机状态
             SetState(StateKind.Idle);
@@ -96,7 +94,6 @@ namespace FSM
         public void OnUpdate()
         {
             CurrentState.OnUpdate();
-            //GetPreState();
         }
         public void OnFixedUpdate()
         {

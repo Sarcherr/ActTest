@@ -1,6 +1,7 @@
- using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using Unit;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace FSM
@@ -8,6 +9,11 @@ namespace FSM
     public class IdleState : BaseState
     {
         public Rigidbody2D myRigidBody;
+        //åˆ‡æ¢é•¿å¾…æœºåŠ¨ç”»æ—¶é—´
+        private float idleTime = 9;
+        //åˆ‡æ¢é•¿å¾…æœºåŠ¨ç”»è®¡æ—¶å™¨
+        private float idleTimer = 0;
+        private bool isIdle = false;
 
         public IdleState(StateMachine fsm):base(fsm)
         {
@@ -15,8 +21,10 @@ namespace FSM
         }
         public override void OnEnter()
         {
-            //ÌáÉıÏßĞÔ×èÄá·ÀÖ¹½ÇÉ«Í£ÏÂÊ±»¬³öÌ«Ô¶
-            myRigidBody.drag = 2;
+            idleTimer = idleTime;
+            isIdle = false;
+            //æå‡çº¿æ€§é˜»å°¼é˜²æ­¢è§’è‰²åœä¸‹æ—¶æ»‘å‡ºå¤ªè¿œ
+            myRigidBody.drag = myPlayer.stopDrag;
 
             if (myPlayer.hasFall)
             {
@@ -34,6 +42,8 @@ namespace FSM
 
         public override void OnExit()
         {
+            idleTimer = idleTime;
+            isIdle = false;
             myRigidBody.drag = 0;
         }
 
@@ -44,40 +54,54 @@ namespace FSM
 
         public override void OnUpdate()
         {
-            if(myPlayer.canCancel)
+            if(myPlayer.canCancel && !isIdle)
             {
                 myPlayer.animator.Play("Idle_player");
             }
 
-            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//ÉÁ±Ü
+            if(idleTimer > 0)
+            {
+                idleTimer -= Time.deltaTime;
+            }
+            else
+            {
+                idleTimer = idleTime;
+                isIdle = true;
+                myPlayer.animator.Play("Idle_long_player");
+            }
+
+            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//é—ªé¿
             {
                 myFSM.SetState(StateKind.Dash);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if (!myPlayer.isGrounded)//ÏÂ×¹
+            else if (!myPlayer.isGrounded)//ä¸‹å 
             {
                 myFSM.SetState(StateKind.Fall);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if (Input.GetKeyDown(KeyCode.I) && myPlayer.isGrounded)//¼¼ÄÜ¹¥»÷
+            else if (Input.GetKeyDown(KeyCode.I) && myPlayer.isGrounded)//æŠ€èƒ½æ”»å‡»
             {
-
+                if (myPlayer.UseSkill())
+                {
+                    OnExit();
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.J) && myPlayer.isGrounded)//Çá¹¥»÷
+            else if (Input.GetKeyDown(KeyCode.J) && myPlayer.isGrounded)//è½»æ”»å‡»
             {
                 myFSM.SetState(StateKind.Attack_normal);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if (Input.GetKeyDown(KeyCode.K) && myPlayer.isGrounded)//ÌøÔ¾
+            else if (Input.GetKeyDown(KeyCode.K) && myPlayer.isGrounded)//è·³è·ƒ
             {
                 myFSM.SetState(StateKind.Jump);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) && myPlayer.isGrounded)//ÒÆ¶¯
+            else if(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) && myPlayer.isGrounded)//ç§»åŠ¨
             {
                 myFSM.SetState(StateKind.Move);
                 OnExit();
@@ -115,7 +139,7 @@ namespace FSM
 
         public override void OnFixedUpdate()
         {
-            //µ÷ÓÃË®Æ½ÒÆ¶¯·½·¨
+            //è°ƒç”¨æ°´å¹³ç§»åŠ¨æ–¹æ³•
             myPlayer.MoveHorizontal();
 
             if (myPlayer.canCancel)
@@ -127,35 +151,38 @@ namespace FSM
 
         public override void OnUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//ÉÁ±Ü
+            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//é—ªé¿
             {
                 myFSM.SetState(StateKind.Dash);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if (!myPlayer.isGrounded)//ÏÂ×¹
+            else if (!myPlayer.isGrounded)//ä¸‹å 
             {
                 myFSM.SetState(StateKind.Fall);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if (Input.GetKeyDown(KeyCode.I) && myPlayer.isGrounded)//¼¼ÄÜ¹¥»÷
+            else if (Input.GetKeyDown(KeyCode.I) && myPlayer.isGrounded)//æŠ€èƒ½æ”»å‡»
             {
-
+                if (myPlayer.UseSkill())
+                {
+                    OnExit();
+                }
             }
-            else if (Input.GetKeyDown(KeyCode.J) && myPlayer.isGrounded)//Çá¹¥»÷
+            else if (Input.GetKeyDown(KeyCode.J) && myPlayer.isGrounded)//è½»æ”»å‡»
             {
                 myFSM.SetState(StateKind.Attack_normal);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if (Input.GetKeyDown(KeyCode.K) && myPlayer.isGrounded)//ÌøÔ¾
+            else if (Input.GetKeyDown(KeyCode.K) && myPlayer.isGrounded)//è·³è·ƒ
             {
                 myFSM.SetState(StateKind.Jump);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if(!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)//ËÉ¿ªADÇÒÎ´ÔÚ×¹Âä
+            else if(!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)//æ¾å¼€ADä¸”æœªåœ¨å è½
             {
                 myFSM.SetState(StateKind.Idle);
                 OnExit();
@@ -176,7 +203,7 @@ namespace FSM
         public override void OnEnter()
         {
             myPlayer.animator.Play("Fall_player");
-            //ÏÂ×¹Ê±Ôö´óÖØÁ¦
+            //ä¸‹å æ—¶å¢å¤§é‡åŠ›
             myRigidBody.gravityScale = myPlayer.fallGravity;
         }
 
@@ -187,35 +214,35 @@ namespace FSM
 
         public override void OnFixedUpdate()
         {
-            //µ÷ÓÃË®Æ½ÒÆ¶¯·½·¨
+            //è°ƒç”¨æ°´å¹³ç§»åŠ¨æ–¹æ³•
             myPlayer.MoveHorizontal();
-            //ÏŞÖÆ×î´óÏÂ×¹ËÙ¶È
+            //é™åˆ¶æœ€å¤§ä¸‹å é€Ÿåº¦
             speedY = Mathf.Min(myRigidBody.velocity.y, myPlayer.maxFallSpeed);
             myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, speedY);
         }
 
         public override void OnUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//ÉÁ±Ü
+            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//é—ªé¿
             {
                 myFSM.SetState(StateKind.Dash);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if (Input.GetKeyDown(KeyCode.J))//¿ÕÖĞ¹¥»÷
+            else if (Input.GetKeyDown(KeyCode.J) && myPlayer.canAttack_sky)//ç©ºä¸­æ”»å‡»
             {
-                //myFSM.SetState(StateKind.Attack_sky);
-                //OnExit();
-                //myFSM.CurrentState.OnEnter();
+                myFSM.SetState(StateKind.Attack_sky);
+                OnExit();
+                myFSM.CurrentState.OnEnter();
             }
-            else if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)//ÒÆ¶¯
+            else if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)//ç§»åŠ¨
             {
                 myPlayer.hasFall = true;
                 myFSM.SetState(StateKind.Move);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if (!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)//ËÉ¿ªADÇÒÎ´ÔÚ×¹Âä
+            else if (!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)//æ¾å¼€ADä¸”æœªåœ¨å è½
             {
                 myPlayer.hasFall = true;
                 myFSM.SetState(StateKind.Idle);
@@ -235,39 +262,40 @@ namespace FSM
         }
         public override void OnEnter()
         {
-            //»ñÈ¡´¹Ö±·½ÏòËÙ¶È
+            myRigidBody.gravityScale = myPlayer.jumpGravity;
+            //è·å–å‚ç›´æ–¹å‘é€Ÿåº¦
             myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, myPlayer.jumpForce);
-            //ÔİÊ±½ûÓÃgroundsensor±ÜÃâÌøÔ¾³õÆÚisgroundedÈÔÎªtrue
+            //æš‚æ—¶ç¦ç”¨groundsensoré¿å…è·³è·ƒåˆæœŸisgroundedä»ä¸ºtrue
             myPlayer.groundSensor.Disable(0.2f);
             myPlayer.animator.Play("Jump_player");
         }
 
         public override void OnExit()
         {
-            myPlayer.animator.SetBool("isJump", false);
+            myRigidBody.gravityScale = 1;
         }
 
         public override void OnFixedUpdate()
         {
-            //µ÷ÓÃË®Æ½ÒÆ¶¯·½·¨
+            //è°ƒç”¨æ°´å¹³ç§»åŠ¨æ–¹æ³•
             myPlayer.MoveHorizontal();
         }
 
         public override void OnUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//ÉÁ±Ü
+            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//é—ªé¿
             {
                 myFSM.SetState(StateKind.Dash);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if (Input.GetKeyDown(KeyCode.J))//¿ÕÖĞ¹¥»÷
+            else if (Input.GetKeyDown(KeyCode.J) && myPlayer.canAttack_sky)//ç©ºä¸­æ”»å‡»
             {
-                //myFSM.SetState(StateKind.Attack_sky);
-                //OnExit();
-                //myFSM.CurrentState.OnEnter();
+                myFSM.SetState(StateKind.Attack_sky);
+                OnExit();
+                myFSM.CurrentState.OnEnter();
             }
-            else if (myRigidBody.velocity.y <= 0)//ÏÂ×¹Ê±ÇĞ»ØÏÂ×¹×´Ì¬
+            else if (myRigidBody.velocity.y <= 0)//ä¸‹å æ—¶åˆ‡å›ä¸‹å çŠ¶æ€
             {
                 myFSM.SetState(StateKind.Fall);
                 OnExit();
@@ -279,29 +307,25 @@ namespace FSM
     public class AttackState_normal : BaseState
     {
         public Rigidbody2D myRigidBody;
-        //¹¥»÷ÉËº¦
-        public int attackDamage;
-        //¹¥»÷ÒÆ¶¯·ù¶È
+        //æ”»å‡»ç§»åŠ¨å¹…åº¦
         public float attackMoveForce;
-        //¹¥»÷Á¬¶ÎÊı
+        //æ”»å‡»è¿æ®µæ•°
         public int attackNum = 0;
-        //ÊÇ·ñÈ¡Ïû
+        //æ˜¯å¦å–æ¶ˆ
         public bool isCancel = false;
 
-        //Ô¤ÊäÈë´°¿Ú
+        //é¢„è¾“å…¥çª—å£
         public float preTime = 0.2f;
-        //Ô¤ÊäÈë¼ÆÊ±Æ÷
+        //é¢„è¾“å…¥è®¡æ—¶å™¨
         public float preTimer = 0;
 
         public AttackState_normal(StateMachine fsm) : base(fsm)
         {
             myRigidBody = myPlayer.GetComponent<Rigidbody2D>();
-            attackDamage = myPlayer.attackDamage_normal;
             attackMoveForce = myPlayer.attackMoveForce_normal;
         }
         public override void OnEnter()
         {
-            Debug.Log("Attack_normal Enter");
             isCancel = false;
             preTimer = 0;
 
@@ -323,7 +347,7 @@ namespace FSM
                 attackNum = 1;
             }
 
-            //Ê¹Íæ¼ÒÏÈÍ£ÏÂ(Maybe)
+            //ä½¿ç©å®¶å…ˆåœä¸‹(Maybe)
             myRigidBody.velocity = Vector2.zero;
             switch (attackNum)
             {
@@ -356,8 +380,6 @@ namespace FSM
 
         public override void OnExit()
         {
-            Debug.Log("Attack_normal Exit");
-
             myPlayer.attackTimer = myPlayer.attackTime;
             myPlayer.Set_normal_1(0);
             myPlayer.Set_normal_2(0);
@@ -402,7 +424,7 @@ namespace FSM
 
         public override void OnUpdate()
         {
-            //Ô¤ÊäÈë
+            //é¢„è¾“å…¥
             if(preTimer > 0)
             {
                 preTimer -= Time.deltaTime;
@@ -411,22 +433,26 @@ namespace FSM
             {
                 preTimer = preTime;  
             }
-            //ÖØ»÷¶ÁÈ¡
+            //é‡å‡»è¯»å–
             if(Input.GetKeyDown(KeyCode.J) || Input.GetKeyUp(KeyCode.J))
             {
                 myPlayer.hasPull = false;
             }
 
-            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//ÉÁ±Ü
+            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//é—ªé¿
             {
                 isCancel = true;
                 myFSM.SetState(StateKind.Dash);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if (Input.GetKeyDown(KeyCode.I) && myPlayer.isGrounded)//¼¼ÄÜ¹¥»÷
+            else if (Input.GetKeyDown(KeyCode.I) && myPlayer.isGrounded && myPlayer.canCancel)//æŠ€èƒ½æ”»å‡»
             {
-
+                if (myPlayer.UseSkill())
+                {
+                    isCancel = true;
+                    OnExit();
+                }
             }
         }
     }
@@ -434,30 +460,39 @@ namespace FSM
     public class AttackState_sky : BaseState
     {
         public Rigidbody2D myRigidBody;
-        //¹¥»÷ÉËº¦
-        public int attackDamage;
-        //ÊÇ·ñÈ¡Ïû
+        private float speedY;
+        //æ˜¯å¦å–æ¶ˆ
         public bool isCancel = false;
 
         public AttackState_sky(StateMachine fsm) : base(fsm)
         {
             myRigidBody = myPlayer.GetComponent<Rigidbody2D>();
-            attackDamage = myPlayer.attackDamage_normal;
         }
         public override void OnEnter()
         {
-            Debug.Log("Attack_sky Enter");
+            isCancel = false;
+            myPlayer.canAttack_sky = false;
+            //ä¸‹å æ—¶å¢å¤§é‡åŠ›
+            myRigidBody.gravityScale = myPlayer.fallGravity;
+
+            myPlayer.animator.Play("Attack_sky_player");
         }
 
         public override void OnExit()
         {
-            Debug.Log("Attack_sky Exit");
+            myRigidBody.gravityScale = 1;
 
             if (!isCancel)
             {
-                if (myPlayer.isGrounded)
+                if (!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)
                 {
+                    myPlayer.hasFall = true;
                     myFSM.SetState(StateKind.Idle);
+                }
+                else if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)
+                {
+                    myPlayer.hasFall = true;
+                    myFSM.SetState(StateKind.Move);
                 }
                 else
                 {
@@ -470,27 +505,19 @@ namespace FSM
 
         public override void OnFixedUpdate()
         {
-
+            //é™åˆ¶æœ€å¤§ä¸‹å é€Ÿåº¦
+            speedY = Mathf.Min(myRigidBody.velocity.y, myPlayer.maxFallSpeed);
+            myRigidBody.velocity = new Vector2(myRigidBody.velocity.x, speedY);
         }
 
         public override void OnUpdate()
         {
+            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//é—ªé¿
             {
-                if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//ÉÁ±Ü
-                {
-                    isCancel = true;
-                    myFSM.SetState(StateKind.Dash);
-                    OnExit();
-                    myFSM.CurrentState.OnEnter();
-                }
-                else if (false)//¼¼ÄÜ¹¥»÷
-                {
-
-                }
-                else if (false)//ÖØ¹¥»÷
-                {
-
-                }
+                isCancel = true;
+                myFSM.SetState(StateKind.Dash);
+                OnExit();
+                myFSM.CurrentState.OnEnter();
             }
         }
     }
@@ -498,24 +525,17 @@ namespace FSM
     public class AttackState_heavy : BaseState
     {
         public Rigidbody2D myRigidBody;
-        //¹¥»÷ÉËº¦
-        public int attackDamage;
-        //¹¥»÷ÒÆ¶¯·ù¶È
-        public float attackMoveForce;
-        //ÊÇ·ñÈ¡Ïû
+        //æ˜¯å¦å–æ¶ˆ
         public bool isCancel = false;
 
         public AttackState_heavy(StateMachine fsm) : base(fsm)
         {
             myRigidBody = myPlayer.GetComponent<Rigidbody2D>();
-            attackDamage = myPlayer.attackDamage_normal;
-            attackMoveForce = myPlayer.attackMoveForce_heavy;
         }
         public override void OnEnter()
         {
-            Debug.Log("Attack_heavy Enter");
             isCancel = false;
-            //Ê¹Íæ¼ÒÏÈÍ£ÏÂ(Maybe)
+            //ä½¿ç©å®¶å…ˆåœä¸‹(Maybe)
             myRigidBody.velocity = Vector2.zero;
 
             if (myPlayer.hasPull)
@@ -534,11 +554,11 @@ namespace FSM
 
         public override void OnExit()
         {
-            Debug.Log("Attack_heavy Exit");
-
             myPlayer.hasPull = false;
             myPlayer.Set_heavy(0);
             myPlayer.Set_canCancel(1);
+            myPlayer.Set_isInvincible(0);
+            myPlayer.Set_isUnstoppable(0);
 
             if (!isCancel)
             {
@@ -567,36 +587,62 @@ namespace FSM
 
         public override void OnUpdate()
         {
-            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//ÉÁ±Ü
+            if (Input.GetKeyDown(KeyCode.L) && myPlayer.dashColdTimer <= 0)//é—ªé¿
             {
                 isCancel = true;
                 myFSM.SetState(StateKind.Dash);
                 OnExit();
                 myFSM.CurrentState.OnEnter();
             }
-            else if (Input.GetKeyDown(KeyCode.I) && myPlayer.isGrounded)//¼¼ÄÜ¹¥»÷
+            else if (Input.GetKeyDown(KeyCode.I) && myPlayer.isGrounded && myPlayer.canCancel)//æŠ€èƒ½æ”»å‡»
             {
-
+                if (myPlayer.UseSkill())
+                {
+                    isCancel = true;
+                    OnExit();
+                }
             }
         }
     }
 
     public class AttackState_skill_1 : BaseState
     {
-        public int attackDamage;
+        public Rigidbody2D myRigidBody;
 
         public AttackState_skill_1(StateMachine fsm) : base(fsm)
         {
-
+            myRigidBody = myPlayer.GetComponent<Rigidbody2D>();
         }
         public override void OnEnter()
         {
+            myPlayer.Set_isUnstoppable(1);
+            //ä½¿ç©å®¶å…ˆåœä¸‹(Maybe)
+            myRigidBody.velocity = Vector2.zero;
+            myPlayer.animator.Play("Attack_skill_1_player");
 
         }
 
         public override void OnExit()
         {
+            myPlayer.Set_skill_1_1(0);
+            myPlayer.Set_isInvincible(0);
+            myPlayer.Set_isUnstoppable(0);
 
+            if (!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)
+            {
+                myFSM.SetState(StateKind.Idle);
+            }
+            else if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)
+            {
+                myPlayer.hasFall = true;
+                myFSM.SetState(StateKind.Move);
+            }
+            else
+            {
+                myFSM.SetState(StateKind.Fall);
+            }
+
+            myFSM.CurrentState.OnEnter();
         }
 
         public override void OnFixedUpdate()
@@ -612,20 +658,66 @@ namespace FSM
 
     public class AttackState_skill_2 : BaseState
     {
-        public int attackDamage;
+        public Rigidbody2D myRigidBody;
 
         public AttackState_skill_2(StateMachine fsm) : base(fsm)
         {
-
+            myRigidBody = myPlayer.GetComponent<Rigidbody2D>();
         }
         public override void OnEnter()
         {
+            myPlayer.Set_isUnstoppable(1);
+            myPlayer.Set_end(0);
+            //ä½¿ç©å®¶å…ˆåœä¸‹(Maybe)
+            myRigidBody.velocity = Vector2.zero;
 
+            switch(myPlayer.skillNow)
+            {
+                case SkillHasUse.skill_2_1:
+                    myPlayer.animator.Play("Attack_skill_2_1_player");
+                    break;
+
+                case SkillHasUse.skill_2_2:
+                    myPlayer.animator.Play("Attack_skill_2_2_player");
+                    break;
+
+                case SkillHasUse.skill_2_3:
+
+                    myPlayer.animator.Play("Attack_skill_2_3_player");
+                    break;
+            }
         }
 
         public override void OnExit()
         {
+            myPlayer.Set_skill_2_1(0);
+            myPlayer.Set_skill_2_2(0);
+            myPlayer.Set_skill_2_3(0);
+            myPlayer.Set_end(0);
+            myPlayer.Set_isInvincible(0);
+            myPlayer.Set_isUnstoppable(0);
+            
 
+            if (!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)
+            {
+                myFSM.SetState(StateKind.Idle);
+            }
+            else if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)
+            {
+                myFSM.SetState(StateKind.Move);
+            }
+            else
+            {
+                myFSM.SetState(StateKind.Fall);
+            }
+
+            myFSM.CurrentState.OnEnter();
+            if(myPlayer.skillNow == SkillHasUse.skill_2_3)
+            {
+                myPlayer.TP_end();
+                myPlayer.Focus_Player();
+                myPlayer.CameraFocus(0);
+            }
         }
 
         public override void OnFixedUpdate()
@@ -647,12 +739,13 @@ namespace FSM
         {
             myRigidBody = myObject.GetComponent<Rigidbody2D>();
         }
+
         public override void OnEnter()
         {
-            //ÉÁ±ÜÍ¨¹ı¸øÓè¹Ì¶¨³å´ÌËÙ¶ÈºÍÈ¡ÏûÖØÁ¦ÊµÏÖ
+            //é—ªé¿é€šè¿‡ç»™äºˆå›ºå®šå†²åˆºé€Ÿåº¦å’Œå–æ¶ˆé‡åŠ›å®ç°
             myRigidBody.gravityScale = 0;
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || !myPlayer.isGrounded)
-            {            
+            {
                 myRigidBody.velocity = new Vector2(myPlayer.dashSpeed * myPlayer.faceDir, 0);
 
                 if(myPlayer.isGrounded)
@@ -673,7 +766,66 @@ namespace FSM
 
         public override void OnExit()
         {
-            Debug.Log("Dash Exit");
+            if (!myPlayer.inDashWindow)
+            {
+                myPlayer.Set_isInvincible(0);
+                myRigidBody.gravityScale = 1;
+                myRigidBody.velocity = new Vector2(0, 0);
+                myPlayer.dashColdTimer = myPlayer.dashCold;
+
+                if (!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)
+                {
+                    myFSM.SetState(StateKind.Idle);
+                }
+                else if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)
+                {
+                    myPlayer.hasFall = true;
+                    myFSM.SetState(StateKind.Move);
+                }
+                else
+                {
+                    myFSM.SetState(StateKind.Fall);
+                }
+                myFSM.CurrentState.OnEnter();
+            }
+
+            myPlayer.Set_inDashWindow(0);
+            myPlayer.Set_inDashWindow_back(0);
+        }
+
+        public override void OnFixedUpdate()
+        {
+            
+        }
+
+        public override void OnUpdate()
+        {
+
+        }
+    }
+
+    public class DashState_extreme : BaseState
+    {
+        private Rigidbody2D myRigidBody;
+
+        public DashState_extreme(StateMachine fsm) : base(fsm)
+        {
+            myRigidBody = myObject.GetComponent<Rigidbody2D>();
+        }
+        public override void OnEnter()
+        {
+            //é—ªé¿é€šè¿‡ç»™äºˆå›ºå®šå†²åˆºé€Ÿåº¦å’Œå–æ¶ˆé‡åŠ›å®ç°
+            myRigidBody.gravityScale = 0;
+            myRigidBody.velocity = new Vector2(myPlayer.dashSpeed * myPlayer.faceDir * 2f, 0);
+            myPlayer.Set_isInvincible(1);
+            myPlayer.animator.Play("Dash_extreme_player");
+        }
+
+        public override void OnExit()
+        {
+            myPlayer.Set_inDashWindow(0);
+            myPlayer.Set_inDashWindow_back(0);
+            myPlayer.Set_isInvincible(0);
             myRigidBody.gravityScale = 1;
             myRigidBody.velocity = new Vector2(0, 0);
             myPlayer.dashColdTimer = myPlayer.dashCold;
@@ -696,7 +848,7 @@ namespace FSM
 
         public override void OnFixedUpdate()
         {
-            
+
         }
 
         public override void OnUpdate()
@@ -707,24 +859,41 @@ namespace FSM
 
     public class HurtState : BaseState
     {
+        private Rigidbody2D myRigidBody;
         public HurtState(StateMachine fsm) : base(fsm)
         {
-
+            myRigidBody = myObject.GetComponent<Rigidbody2D>();
         }
         public override void OnEnter()
         {
+            myPlayer.Set_isInvincible(1);
+            if(myPlayer.isGrounded)
+            {
+                myRigidBody.drag = myPlayer.stopDrag;
+            }
+            myRigidBody.gravityScale = myPlayer.fallGravity;
             myPlayer.animator.Play("Hurt_player");
         }
 
         public override void OnExit()
         {
-            if (myPlayer.isGrounded)
+            myRigidBody.drag = 0;
+            myPlayer.Set_isInvincible(0);
+
+            if (!(Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)
             {
+                myRigidBody.gravityScale = 1;
                 myFSM.SetState(StateKind.Idle);
+            }
+            else if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)
+            {
+                myPlayer.hasFall = true;
+                myRigidBody.gravityScale = 1;
+                myFSM.SetState(StateKind.Move);
             }
             else
             {
-                myFSM.SetState(StateKind.Move);
+                myFSM.SetState(StateKind.Fall);
             }
             myFSM.CurrentState.OnEnter();
         }
@@ -737,6 +906,35 @@ namespace FSM
         public override void OnUpdate()
         {
             
+        }
+    }
+
+    public class DeadState : BaseState
+    {
+        public DeadState(StateMachine fsm) : base(fsm)
+        {
+
+        }
+        public override void OnEnter()
+        {
+            myPlayer.Set_isInvincible(1);
+            myObject.GetComponent<Rigidbody2D>().drag = myPlayer.stopDrag;
+            myPlayer.animator.Play("Dead_player");
+        }
+
+        public override void OnExit()
+        {
+            //æ¸¸æˆå¤±è´¥
+        }
+
+        public override void OnFixedUpdate()
+        {
+
+        }
+
+        public override void OnUpdate()
+        {
+
         }
     }
 
