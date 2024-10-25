@@ -84,6 +84,10 @@ namespace Unit
         [Header("攻击连段窗口期")] public float attackTime;
 
         /// <summary>
+        /// 血瓶消耗
+        /// </summary>
+        [Header("血瓶消耗")] public int cureConsumption;
+        /// <summary>
         /// 登龙SP消耗
         /// </summary>
         [Header("登龙SP消耗")] public int attackConsumption_skill_1;
@@ -112,6 +116,11 @@ namespace Unit
         /// 登龙1段移动幅度
         /// </summary>
         [Header("登龙1段移动幅度")] public float attackMoveForce_skill_1;
+
+        /// <summary>
+        /// 血瓶治疗量
+        /// </summary>
+        [Header("血瓶治疗量")] public int cureQuantity;
 
         /// <summary>
         /// 普通(轻)攻击伤害_1
@@ -257,6 +266,14 @@ namespace Unit
         /// 次元斩基准点end
         /// </summary>
         [HideInInspector] public GameObject skill_2_3_end;
+        /// <summary>
+        /// 受击特效基准点
+        /// </summary>
+        [HideInInspector] public GameObject hurter;
+        /// <summary>
+        /// 恢复特效基准点
+        /// </summary>
+        [HideInInspector] public GameObject curer;
 
         /// <summary>
         /// 角色动画机
@@ -308,6 +325,8 @@ namespace Unit
 
             skill_2_3_middle = transform.Find("skill_2_3_middle").gameObject;
             skill_2_3_end = transform.Find("skill_2_3_end").gameObject;
+            hurter = transform.Find("Hurter").gameObject;
+            curer = transform.Find("Curer").gameObject;
         }
 
 
@@ -318,6 +337,7 @@ namespace Unit
             GetGroundState();
             AttackTimeCount();
             DashColdDown();
+            Heal();
 
             if(Input.GetKeyDown(KeyCode.R))
             {
@@ -528,15 +548,18 @@ namespace Unit
                     Set_inDashWindow_back(0);
                     animator.speed = 0;
                     myRigidBody.velocity = Vector2.zero;
-                    Invoke("KeepPlay", 0.1f);
+                    Invoke(nameof(KeepPlay), 0.1f);
                 }
             }
             else if (isUnstoppable && !isInvincible)
             {
+                hurter.SetActive(true);
+                Invoke(nameof(QuikDisable), 0.08f);
                 currentHP -= (int)(damage * damageScale);
             }
             else if (!isInvincible)
             {
+                hurter.SetActive(true);
                 currentHP -= damage;
 
                 //受击
@@ -546,6 +569,8 @@ namespace Unit
             }
             if (currentHP < 0)
             {
+                hurter.SetActive(true);
+                hurter.GetComponent<Animator>().speed = 0.7f;
                 //死亡
                 End_state_now();
                 fsm.SetState(StateKind.Dead);
@@ -558,7 +583,23 @@ namespace Unit
         /// </summary>
         public void Heal()
         {
+            if(Input.GetKeyDown(KeyCode.O))
+            {
+                if(currentCure >= cureConsumption)
+                {
+                    curer.SetActive(true);
+                    int _currentHP = currentHP + cureQuantity;
+                    _currentHP = Math.Clamp(_currentHP, 0, maxHP);
+                    currentHP = _currentHP;
 
+                    CureChange(-cureConsumption);
+                }
+                else
+                {
+                    //UI提示
+                    Debug.Log("血瓶不够喵");
+                }
+            }
         }
 
         /// <summary>
@@ -568,6 +609,14 @@ namespace Unit
         {
             animator.speed = 1;
             myRigidBody.velocity = new Vector2(-dashSpeed * faceDir, 0);
+        }
+
+        /// <summary>
+        /// 禁用受击特效(霸体受击用)
+        /// </summary>
+        public void QuikDisable()
+        {
+            hurter.SetActive(false);
         }
 
         /// <summary>
@@ -581,6 +630,8 @@ namespace Unit
             }
             else
             {
+                hurter.SetActive(true);
+                Invoke(nameof(QuikDisable), 0.08f);
                 CureChange(dashGain_Cure);
             }
         }
