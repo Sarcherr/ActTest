@@ -5,7 +5,10 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
+    path: Assets/Scenes/CCZ_Scene_Begin.unity
+    guid: 53c58808e2ca5a24ba1a9d63c5eb7c15
+  - enabled: 0
     path: Assets/Scenes/CCZ_Scene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   m_configObjects: {}
