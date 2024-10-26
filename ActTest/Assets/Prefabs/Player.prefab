@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6400088029506702321}
   - component: {fileID: 2476974150606611262}
+  - component: {fileID: 7516511620950963739}
   m_Layer: 0
   m_Name: AttackRange_skill_2_2
   m_TagString: Untagged
@@ -77,6 +78,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 8.5, y: 8}
   m_EdgeRadius: 0
+--- !u!114 &7516511620950963739
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 522307843805900607}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55e109f24784b14cb9a532ecd1ce7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &774183584944382502
 GameObject:
   m_ObjectHideFlags: 0
@@ -87,6 +100,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7578895660020202399}
   - component: {fileID: 5483500241905031325}
+  - component: {fileID: 5337958283029414387}
   m_Layer: 0
   m_Name: AttackRange_skill_1_1
   m_TagString: Untagged
@@ -154,6 +168,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 4, y: 1}
   m_EdgeRadius: 0
+--- !u!114 &5337958283029414387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 774183584944382502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55e109f24784b14cb9a532ecd1ce7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &888850781133491307
 GameObject:
   m_ObjectHideFlags: 0
@@ -164,6 +190,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4191530780097498546}
   - component: {fileID: 5660022487682700504}
+  - component: {fileID: 1575315532238840688}
   m_Layer: 0
   m_Name: AttackRange_skill_2_1
   m_TagString: Untagged
@@ -231,6 +258,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 10, y: 9}
   m_EdgeRadius: 0
+--- !u!114 &1575315532238840688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 888850781133491307}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55e109f24784b14cb9a532ecd1ce7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1328742359921804344
 GameObject:
   m_ObjectHideFlags: 0
@@ -272,6 +311,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9064489627008783710}
   - component: {fileID: 8524667542101156530}
+  - component: {fileID: 4279463724851089102}
   m_Layer: 0
   m_Name: AttackRange_normal_2
   m_TagString: Untagged
@@ -339,6 +379,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.3, y: 1.8}
   m_EdgeRadius: 0
+--- !u!114 &4279463724851089102
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1554990563337515655}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55e109f24784b14cb9a532ecd1ce7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1763598244934674670
 GameObject:
   m_ObjectHideFlags: 0
@@ -349,6 +401,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6918079161524677419}
   - component: {fileID: 5936438242358912922}
+  - component: {fileID: 2533419790534349667}
   m_Layer: 0
   m_Name: AttackRange_normal_1
   m_TagString: Untagged
@@ -416,6 +469,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.3, y: 1.4}
   m_EdgeRadius: 0
+--- !u!114 &2533419790534349667
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1763598244934674670}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55e109f24784b14cb9a532ecd1ce7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1854666540694707959
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,7 +712,7 @@ CapsuleCollider2D:
   m_GameObject: {fileID: 2855435588605226605}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: 0d386238e89686a49a82b23c43619d45, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -698,7 +763,7 @@ Rigidbody2D:
     m_Bits: 0
   m_Interpolate: 1
   m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!114 &6545912798786487733
 MonoBehaviour:
@@ -722,9 +787,9 @@ MonoBehaviour:
   jumpGravity: 2.5
   fallGravity: 3
   maxFallSpeed: 10
-  stopDrag: 5
-  ResetTime: 0.5
-  dashSpeed: 12
+  stopDrag: 7
+  ResetTime: 0.4
+  dashSpeed: 10
   dashCold: 0.5
   dashGain_SP: 20
   dashGain_Cure: 20
@@ -734,24 +799,24 @@ MonoBehaviour:
   mySkill: 0
   attackTime: 1.5
   cureConsumption: 20
-  attackConsumption_skill_1: 40
-  attackConsumption_skill_2_1: 40
-  attackConsumption_skill_2_2: 60
+  attackConsumption_skill_1: 75
+  attackConsumption_skill_2_1: 25
+  attackConsumption_skill_2_2: 50
   attackConsumption_skill_2_3: 100
-  attackMoveForce_normal: 1.5
-  attackMoveForce_heavy: 6
-  attackMoveForce_skill_1: 12
+  attackMoveForce_normal: 1
+  attackMoveForce_heavy: 5
+  attackMoveForce_skill_1: 20
   cureQuantity: 20
-  attackDamage_normal_1: 0
-  attackDamage_normal_2: 0
-  attackDamage_normal_3: 0
+  attackDamage_normal: 0
   attackDamage_heavy: 0
   attackDamage_sky: 0
-  attackDamage_skill_1_1: 0
-  attackDamage_skill_1_2: 0
+  attackDamage_skill_1: 0
   attackDamage_skill_2_1: 0
   attackDamage_skill_2_2: 0
   attackDamage_skill_2_3: 0
+  attackGain_normal: 5
+  attackGain_heavy: 10
+  attackGain_sky: 5
   currentSP: 0
   currentCure: 0
   attackTimer: 0
@@ -765,6 +830,8 @@ MonoBehaviour:
   canAttack_sky: 1
   isUnstoppable: 0
   isInvincible: 0
+  hasBias: 0
+  biasPos: {x: 0, y: 0}
   attackRange_normal_1: {fileID: 0}
   attackRange_normal_2: {fileID: 0}
   attackRange_normal_3: {fileID: 0}
@@ -932,7 +999,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7041973216062683747}
-  - component: {fileID: 8763356928141695602}
   m_Layer: 0
   m_Name: skill_2_3_end
   m_TagString: Untagged
@@ -955,41 +1021,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 8558690321733077592}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!70 &8763356928141695602
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4704217975013234253}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.82}
-  m_Size: {x: 0.7, y: 1.65}
-  m_Direction: 0
 --- !u!1 &5190031655685334230
 GameObject:
   m_ObjectHideFlags: 0
@@ -1000,6 +1031,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8954369813026463874}
   - component: {fileID: 7567477528612340693}
+  - component: {fileID: 5376952985425630243}
   m_Layer: 0
   m_Name: AttackRange_skill_1_2
   m_TagString: Untagged
@@ -1067,6 +1099,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.5, y: 10}
   m_EdgeRadius: 0
+--- !u!114 &5376952985425630243
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5190031655685334230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55e109f24784b14cb9a532ecd1ce7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6708496856477374947
 GameObject:
   m_ObjectHideFlags: 0
@@ -1077,6 +1121,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5980684276922342425}
   - component: {fileID: 4090451679901406555}
+  - component: {fileID: 4682203083238878474}
   m_Layer: 0
   m_Name: AttackRange_heavy
   m_TagString: Untagged
@@ -1144,6 +1189,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 5.5, y: 2.4}
   m_EdgeRadius: 0
+--- !u!114 &4682203083238878474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6708496856477374947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55e109f24784b14cb9a532ecd1ce7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6745266093641842285
 GameObject:
   m_ObjectHideFlags: 0
@@ -1234,6 +1291,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3152084356306713522}
   - component: {fileID: 592846297440918699}
+  - component: {fileID: 7763056975806683311}
   m_Layer: 0
   m_Name: AttackRange_normal_3
   m_TagString: Untagged
@@ -1301,6 +1359,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.5, y: 2.1}
   m_EdgeRadius: 0
+--- !u!114 &7763056975806683311
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7106014209413456878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55e109f24784b14cb9a532ecd1ce7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &8526908186573969300
 GameObject:
   m_ObjectHideFlags: 0
@@ -1311,6 +1381,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4102849193648066207}
   - component: {fileID: 5306408196348688564}
+  - component: {fileID: 5541108742657492996}
   m_Layer: 0
   m_Name: AttackRange_skill_2_3
   m_TagString: Untagged
@@ -1378,6 +1449,18 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 13, y: 10}
   m_EdgeRadius: 0
+--- !u!114 &5541108742657492996
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8526908186573969300}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55e109f24784b14cb9a532ecd1ce7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &9087828494686221792
 GameObject:
   m_ObjectHideFlags: 0
@@ -1388,6 +1471,7 @@ GameObject:
   m_Component:
   - component: {fileID: 282077095618694908}
   - component: {fileID: 3903849908501315358}
+  - component: {fileID: 2479150812409713732}
   m_Layer: 0
   m_Name: AttackRange_sky
   m_TagString: Untagged
@@ -1455,3 +1539,15 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.3, y: 0.6}
   m_EdgeRadius: 0
+--- !u!114 &2479150812409713732
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9087828494686221792}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b55e109f24784b14cb9a532ecd1ce7a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
