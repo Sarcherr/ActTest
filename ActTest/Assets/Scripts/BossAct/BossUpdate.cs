@@ -6,51 +6,51 @@ using UnityEngine;
 
 namespace BossAct
 {
-    /*  Boss×ÜÉúÃüÖµ float BossHP;
-        BossÆÆ·ÀÖµÉÏÏŞ float BossTough
-        Bossµ¥´Î¹¥»÷ÈÍĞÔãĞÖµ float minBossAtkTough;
-        Boss×ª»»½×¶ÎÑªÁ¿ãĞÖµ float minBossHPchangeStage;
-        Boss¶ÌÓ²Ö±Ê±¼ä float shortBossPauseTime;
-        Boss³¤Ó²Ö±Ê±¼ä float longBossPauseTime;
-        ×Ä»÷ÉËº¦ float BossATKHarm1;
-        Äñ³µÉËº¦ float BossATKHarm2;
-        ÅÄ³á°òÉËº¦ float BossATKHarm3;        */
+    /*  Bossæ€»ç”Ÿå‘½å€¼ float BossHP;
+        Bossç ´é˜²å€¼ä¸Šé™ float BossTough
+        Bosså•æ¬¡æ”»å‡»éŸ§æ€§é˜ˆå€¼ float minBossAtkTough;
+        Bossè½¬æ¢é˜¶æ®µè¡€é‡é˜ˆå€¼ float minBossHPchangeStage;
+        BossçŸ­ç¡¬ç›´æ—¶é—´ float shortBossPauseTime;
+        Bossé•¿ç¡¬ç›´æ—¶é—´ float longBossPauseTime;
+        å•„å‡»ä¼¤å®³ float BossATKHarm1;
+        é¸Ÿè½¦ä¼¤å®³ float BossATKHarm2;
+        æ‹ç¿…è†€ä¼¤å®³ float BossATKHarm3;        */
     public class BossUpdate : BossClasses
     {
-        [HideInInspector] public float preBhp;              //µÍÓÚ60%Ê±ÇĞ½×¶Î
+        [HideInInspector] public float preBhp;              //ä½äº60%æ—¶åˆ‡é˜¶æ®µ
         [HideInInspector] public float preTough;
-        [Header("Boss×·»÷ËÙ¶È")] public float chaseSpeed;
-        [Header("×·»÷°ë¾¶")] public float chaseRadius;
-        [Header("¹¥»÷°ë¾¶")] public float attackRadius;
+        [Header("Bossè¿½å‡»é€Ÿåº¦")] public float chaseSpeed;
+        [Header("è¿½å‡»åŠå¾„")] public float chaseRadius;
+        [Header("æ”»å‡»åŠå¾„")] public float attackRadius;
         [HideInInspector] public float P_B_distance;
-        [Header("Äñ³µ³å´ÌËÙ¶È")] public float rushSpeed;
-        [Header("Äñ³µ³å´ÌÊ±¼ä")] public float rushTime;
-        [Header("BossÈÓ¸½ÉúÊŞµÄÑÓ³ÙÊ±¼ä")] public float restTime1;
-        [Header("Boss·¢ÉäÓğÃ«µÄÑÓ³ÙÊ±¼ä")] public float restTime2;
-        [Header("BossÊÍ·ÅÓğÃ«µÄ¾àÀëãĞÖµ")] public float shootDis;
-        [Header("Boss¹¥»÷ÀäÈ´")] public float attackCD = 2f;
+        [Header("é¸Ÿè½¦å†²åˆºé€Ÿåº¦")] public float rushSpeed;
+        [Header("é¸Ÿè½¦å†²åˆºæ—¶é—´")] public float rushTime;
+        [Header("Bossæ‰”é™„ç”Ÿå…½çš„å»¶è¿Ÿæ—¶é—´")] public float restTime1;
+        [Header("Bosså‘å°„ç¾½æ¯›çš„å»¶è¿Ÿæ—¶é—´")] public float restTime2;
+        [Header("Bossé‡Šæ”¾ç¾½æ¯›çš„è·ç¦»é˜ˆå€¼")] public float shootDis;
+        [Header("Bossæ”»å‡»å†·å´")] public float attackCD = 2;
         [HideInInspector] public float attackTimer;
-        [HideInInspector] public bool Dir;                          //¿ØÖÆBossµÄ³¯Ïò,×óÎªtrue
-        [HideInInspector] public float vecDir = 1;                    //¿ØÖÆ³¯ÏòµÄÏòÁ¿
-        [HideInInspector] public bool isATK;                        //ÊÇ·ñ¹¥»÷
-        [HideInInspector] public bool State;                        //ÅĞ¶ÏÊÇ·ñ½øÈë¶ş½×¶Î
-        [HideInInspector] public bool isIdle;                       //ÊÇ·ñ´ı»ú
-        [HideInInspector] public bool isChase;                      //ÊÇ·ñ×·»÷
-        [HideInInspector] public int AttackIndex;                   //ÆÕ¹¥ĞòºÅ
-        [HideInInspector] public bool isHurt;                       //ÊÇ·ñÊÜµ½¹¥»÷
-        [HideInInspector] public bool isHarded;                     //ÊÇ·ñ±»ÖØ»÷
-        [HideInInspector] public bool isSkillHurt;                  //ÊÇ·ñ±»´ÎÔªÕ¶
-        [HideInInspector] public bool isShortPaused;                //ÊÇ·ñ¶ÌÓ²Ö±
-        [HideInInspector] public bool isLongPaused;                 //ÊÇ·ñ³¤Ó²Ö±
-        [HideInInspector] public int isSkill;                       //ÊÇ·ñ·Å¼¼ÄÜ(1yes,0no)
-        [HideInInspector] public float pretimer;                      //¼¼ÄÜ¼ÆÊ±Æ÷(²»ÄÜ²»·Å)
-        [HideInInspector] public float pretimerTime;                  //¼¼ÄÜ¼ÆÊ±Æ÷(²»ÄÜÒ»Ö±·Å)
-        [HideInInspector] public float SkillCD = 5;                 //¼¼ÄÜCD(²»ÄÜ²»·Å)
-        [HideInInspector] public float SkillCD2 = 10;               //¼¼ÄÜ(²»ÄÜÒ»Ö±·Å)
+        [HideInInspector] public bool Dir;                          //æ§åˆ¶Bossçš„æœå‘,å·¦ä¸ºtrue
+        [HideInInspector] public float vecDir = 1;                    //æ§åˆ¶æœå‘çš„å‘é‡
+        [HideInInspector] public bool isATK;                        //æ˜¯å¦æ”»å‡»
+        [HideInInspector] public bool State;                        //åˆ¤æ–­æ˜¯å¦è¿›å…¥äºŒé˜¶æ®µ
+        [HideInInspector] public bool isIdle;                       //æ˜¯å¦å¾…æœº
+        [HideInInspector] public bool isChase;                      //æ˜¯å¦è¿½å‡»
+        [HideInInspector] public int AttackIndex;                   //æ™®æ”»åºå·
+        [HideInInspector] public bool isHurt;                       //æ˜¯å¦å—åˆ°æ”»å‡»
+        [HideInInspector] public bool isHarded;                     //æ˜¯å¦è¢«é‡å‡»
+        [HideInInspector] public bool isSkillHurt;                  //æ˜¯å¦è¢«æ¬¡å…ƒæ–©
+        [HideInInspector] public bool isShortPaused;                //æ˜¯å¦çŸ­ç¡¬ç›´
+        [HideInInspector] public bool isLongPaused;                 //æ˜¯å¦é•¿ç¡¬ç›´
+        [HideInInspector] public int isSkill;                       //æ˜¯å¦æ”¾æŠ€èƒ½(1yes,0no)
+        [HideInInspector] public float pretimer;                      //æŠ€èƒ½è®¡æ—¶å™¨(ä¸èƒ½ä¸æ”¾)
+        [HideInInspector] public float pretimerTime;                  //æŠ€èƒ½è®¡æ—¶å™¨(ä¸èƒ½ä¸€ç›´æ”¾)
+        [HideInInspector] public float SkillCD = 4;                 //æŠ€èƒ½CD(ä¸èƒ½ä¸æ”¾)
+        [HideInInspector] public float SkillCD2 = 8;               //æŠ€èƒ½(ä¸èƒ½ä¸€ç›´æ”¾)
 
-        [HideInInspector] public Rigidbody2D rigidbody2;    //Boss¸ÕÌå
-        [HideInInspector] public Animator animator;         //Boss¶¯»­»ú
-        private BossMachine bossMachine;               //Boss×´Ì¬»ú
+        [HideInInspector] public Rigidbody2D rigidbody2;    //Bossåˆšä½“
+        [HideInInspector] public Animator animator;         //BossåŠ¨ç”»æœº
+        private BossMachine bossMachine;               //BossçŠ¶æ€æœº
         [HideInInspector] public GameObject playerObject;
         [HideInInspector] public GameObject atk1_Sensor;
         [HideInInspector] public GameObject atk3_Sensor;
@@ -82,7 +82,18 @@ namespace BossAct
             atk1_Sensor = transform.Find(nameof(atk1_Sensor)).gameObject;
             atk3_Sensor = transform.Find(nameof(atk3_Sensor)).gameObject;
             animator = GetComponent<Animator>();
-            player = GetComponent<Player>();
+
+
+            //æˆ‘æ”¹çš„
+
+
+            playerObject = GameObject.Find("Player");
+            player = playerObject.GetComponent<Player>();
+
+
+            //æˆ‘æ”¹çš„
+
+
             collider2d = GetComponent<Collider2D>();
             bossMachine.SetUp();
 
@@ -113,20 +124,20 @@ namespace BossAct
         {
             bossMachine.OnFixedUpdate();
         }
-        public void EndNow()    //ÖÕÖ¹µ±Ç°×´Ì¬
+        public void EndNow()    //ç»ˆæ­¢å½“å‰çŠ¶æ€
         {
             bossMachine.presentMode.OnDestroy();
         }
-        public void AddTough(int deltaTough)  //ÔÜÆÆ·ÀÖµ
+        public void AddTough(int deltaTough)  //æ”’ç ´é˜²å€¼
         {
             preTough -= deltaTough;
-            if (preTough >= BossTough)  //ÆÆ·ÀÖµÔÜÂúºó³¤Ó²Ö±
+            if (preTough >= BossTough)  //ç ´é˜²å€¼æ”’æ»¡åé•¿ç¡¬ç›´
             {
                 LongPause();
                 preTough = 0;
             }
         }
-        public void BeHurt(int deltaHP, bool isHard)//±»ÆÕ¹¥ºÍÖØ»÷
+        public void BeHurt(int deltaHP, bool isHard)//è¢«æ™®æ”»å’Œé‡å‡»
         {
             bossMachine.SetState(BossMode.hurt);
             preBhp -= deltaHP;
@@ -142,7 +153,7 @@ namespace BossAct
                 bossMachine.SetState(BossMode.dead);
                 bossMachine.presentMode.OnStart();
             }
-            if (isHard)     //Ö»ÓĞÔÚÊÜµ½ÖØ»÷Ê±²Å»á´¥·¢ÊÜ»÷¶¯»­
+            if (isHard)     //åªæœ‰åœ¨å—åˆ°é‡å‡»æ—¶æ‰ä¼šè§¦å‘å—å‡»åŠ¨ç”»
             {
                 animator.SetInteger("isPause", 1);
                 EndNow();
@@ -151,9 +162,9 @@ namespace BossAct
             }
             isHurt = false; animator.SetBool(nameof(isHurt), isHurt);
         }
-        public void BeSkillHurt(int deltaHP)//±»´ÎÔªÕ¶
+        public void BeSkillHurt(int deltaHP)//è¢«æ¬¡å…ƒæ–©
         {
-            //deltaHPºÍdeltaToughÓÉÍæ¼Ò¼¼ÄÜº¯Êı¾ö¶¨
+            //deltaHPå’ŒdeltaToughç”±ç©å®¶æŠ€èƒ½å‡½æ•°å†³å®š
             isSkillHurt = true; animator.SetBool(nameof(isSkillHurt), isSkillHurt);
             animator.SetInteger("isPause", 1);
             preBhp -= deltaHP;
@@ -161,21 +172,21 @@ namespace BossAct
             bossMachine.SetState(BossMode.longPause);
             bossMachine.presentMode.OnStart();
         }
-        public void ShortPause()    //¶ÌÓ²Ö±,²»µ¹µØ
+        public void ShortPause()    //çŸ­ç¡¬ç›´,ä¸å€’åœ°
         {
             isShortPaused = true;
             animator.SetTrigger("isShortPause");
             bossMachine.SetState(BossMode.shortPause);
             bossMachine.presentMode.OnStart();
         }
-        public void LongPause()     //³¤Ó²Ö±,Ó²Ö±¼Óµ¹µØ
+        public void LongPause()     //é•¿ç¡¬ç›´,ç¡¬ç›´åŠ å€’åœ°
         {
             isLongPaused = true;
             animator.SetTrigger("isLongPause");
             bossMachine.SetState(BossMode.longPause);
             bossMachine.presentMode.OnStart();
         }
-        public void changeState()   //±äºìÎÂµÄº¯Êı
+        public void changeState()   //å˜çº¢æ¸©çš„å‡½æ•°
         {
             if (preBhp <= 0.6f * BossHP)
             {
@@ -186,30 +197,30 @@ namespace BossAct
         {
             animator.SetBool("isDead", true);
             gameObject.SetActive(false);
-            //È»ºó±¬³öÊ³²Ä?
+            //ç„¶åçˆ†å‡ºé£Ÿæ?
         }
-        public void ChaseR()    //×·
+        public void ChaseR()    //è¿½
         {
             faceDir();
             animator.SetBool(nameof(isChase), isChase);
             rigidbody2.velocity = new Vector3(chaseSpeed * vecDir, 0, 0);
         }
-        public void Idle()      //´ı»ú  
+        public void Idle()      //å¾…æœº  
         {
             animator.SetBool(nameof(isIdle), isIdle);
         }
-        public void faceDir()   //¿ØÖÆBossÔÚ×·»÷ºÍ¹¥»÷Ê±Ò»Ö±³¯ÏòPlayer
+        public void faceDir()   //æ§åˆ¶Bossåœ¨è¿½å‡»å’Œæ”»å‡»æ—¶ä¸€ç›´æœå‘Player
         {
             float bossX = gameObject.transform.position.x;
             float playerX = playerObject.transform.position.x;
-            //Ä¬ÈÏBoss³õÊ¼×´Ì¬ÏÂÃæ³¯×ó
-            if (bossX - playerX < 0)        //BossÔÚPlayer×ó²à,BossÏòÓÒ
+            //é»˜è®¤Bossåˆå§‹çŠ¶æ€ä¸‹é¢æœå·¦
+            if (bossX - playerX < 0)        //Bossåœ¨Playerå·¦ä¾§,Bosså‘å³
             {
                 transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, 1);
                 vecDir = 1;
                 Dir = false;
             }
-            else if (bossX - playerX > 0)   //BossÔÚPlayerÓÒ²à,BossÏò×ó
+            else if (bossX - playerX > 0)   //Bossåœ¨Playerå³ä¾§,Bosså‘å·¦
             {
                 transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, 1);
                 vecDir = -1;
@@ -218,10 +229,10 @@ namespace BossAct
         }
         public void CheckState()
         {
-            Vector3 Bossdir = transform.position;   //»ñÈ¡BossÎ»ÖÃ
-            Vector3 Playerdir = playerObject.transform.position;    //»ñÈ¡PlayerÎ»ÖÃ
+            Vector3 Bossdir = transform.position;   //è·å–Bossä½ç½®
+            Vector3 Playerdir = playerObject.transform.position;    //è·å–Playerä½ç½®
             P_B_distance = Mathf.Abs(Vector3.Distance(Bossdir, Playerdir));
-            if (P_B_distance <= chaseRadius && P_B_distance > attackRadius) //×·
+            if (P_B_distance <= chaseRadius && P_B_distance > attackRadius) //è¿½
             {
                 isIdle = false; animator.SetBool(nameof(isIdle), isIdle);
                 isChase = true; animator.SetBool(nameof(isChase), isChase);
@@ -229,7 +240,7 @@ namespace BossAct
                 bossMachine.SetState(BossMode.chase);
                 bossMachine.presentMode.OnStart();
             }
-            else if (P_B_distance <= attackRadius && attackTimer <= 0)  //¹¥»÷
+            else if (P_B_distance <= attackRadius && attackTimer <= 0)  //æ”»å‡»
             {
                 isIdle = false; animator.SetBool(nameof(isIdle), isIdle);
                 isChase = false; animator.SetBool(nameof(isChase), isChase);
@@ -266,7 +277,7 @@ namespace BossAct
         }
         public void DecideSkillAtk()
         {
-            int i = Random.Range(0, 2); //i=0Ê±·¢ÉäÓğÃ«,i=1Ê±Éú¸½ÉúÊŞ
+            int i = Random.Range(0, 2); //i=0æ—¶å‘å°„ç¾½æ¯›,i=1æ—¶ç”Ÿé™„ç”Ÿå…½
             if (i == 0)
             {
                 int babynum = throwBaby.num;
@@ -299,7 +310,7 @@ namespace BossAct
         {
             animator.SetInteger(nameof(AttackIndex), AttackIndex);
         }
-        public IEnumerator Attack2()  //Äñ³µ,Òª³å
+        public IEnumerator Attack2()  //é¸Ÿè½¦,è¦å†²
         {
             float pretime = 0;
             AttackIndex = 2; animator.SetInteger(nameof(AttackIndex), AttackIndex);
@@ -314,30 +325,30 @@ namespace BossAct
         {
             animator.SetInteger(nameof(AttackIndex), AttackIndex);
         }
-        public void AttackIndexReturn() //Ë÷Òı¹éÁã
+        public void AttackIndexReturn() //ç´¢å¼•å½’é›¶
         {
             AttackIndex = 0;
             bossMachine.presentMode.OnDestroy();
             bossMachine.SetState(BossMode.chase);
             bossMachine.presentMode.OnStart();
         }
-        public void StopRush()          //Ë¤µ¹ºóÍ£Ö¹ÔË¶¯
+        public void StopRush()          //æ‘”å€’ååœæ­¢è¿åŠ¨
         {
             rigidbody2.velocity = Vector3.zero;
         }
-        public void ATK1Sensor1()       //à¹Ì½²âÆ÷ÏÔÊ¾
+        public void ATK1Sensor1()       //å–™æ¢æµ‹å™¨æ˜¾ç¤º
         {
             atk1_Sensor.SetActive(true);
         }
-        public void ATK1Sensor0()       //à¹Ì½²âÆ÷ÏûÊ§
+        public void ATK1Sensor0()       //å–™æ¢æµ‹å™¨æ¶ˆå¤±
         {
             atk1_Sensor.SetActive(false);
         }
-        public void ATK3Sensor1()       //¼¦³áÌ½²âÆ÷ÏÔÊ¾
+        public void ATK3Sensor1()       //é¸¡ç¿…æ¢æµ‹å™¨æ˜¾ç¤º
         {
             atk3_Sensor.SetActive(true);
         }
-        public void ATK3Sensor0()       //¼¦³áÌ½²âÆ÷ÏûÊ§
+        public void ATK3Sensor0()       //é¸¡ç¿…æ¢æµ‹å™¨æ¶ˆå¤±
         {
             atk3_Sensor.SetActive(false);
         }

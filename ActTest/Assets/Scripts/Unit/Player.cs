@@ -85,6 +85,10 @@ namespace Unit
         [Header("攻击连段窗口期")] public float attackTime;
 
         /// <summary>
+        /// 血瓶治疗量
+        /// </summary>
+        [Header("血瓶治疗量")] public int cureQuantity;
+        /// <summary>
         /// 血瓶消耗
         /// </summary>
         [Header("血瓶消耗")] public int cureConsumption;
@@ -117,11 +121,6 @@ namespace Unit
         /// 登龙1段移动幅度
         /// </summary>
         [Header("登龙1段移动幅度")] public float attackMoveForce_skill_1;
-
-        /// <summary>
-        /// 血瓶治疗量
-        /// </summary>
-        [Header("血瓶治疗量")] public int cureQuantity;
 
         /// <summary>
         /// 普通(轻)攻击伤害
@@ -626,6 +625,7 @@ namespace Unit
                          and not StateKind.Attack_heavy and not StateKind.Attack_skill_1
                           and not StateKind.Attack_skill_2 and not StateKind.Dash_extreme)
                     {
+                        curer.SetActive(false);
                         curer.SetActive(true);
                         int _currentHP = currentHP + cureQuantity;
                         _currentHP = Math.Clamp(_currentHP, 0, maxHP);
@@ -687,11 +687,11 @@ namespace Unit
             while(timer < ResetTime)
             {
                 timer += Time.deltaTime;
-                myCamera.m_Lens.OrthographicSize = Mathf.Lerp(3.95f, 6, timer/ResetTime);
+                myCamera.m_Lens.OrthographicSize = Mathf.Lerp(3.95f, 7, timer/ResetTime);
                 yield return null;
             }
 
-            myCamera.m_Lens.OrthographicSize = 6;
+            myCamera.m_Lens.OrthographicSize = 7;
         }
 
         #region 用于帧事件调用(其中int参数使用1/0表示true/false)

@@ -233,6 +233,7 @@ namespace Boss
         }
         public override void OnStart()
         {
+            BossObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
             theBoss.animator.Play("Boss_ShortPause");
             OnDestroy();
         }
@@ -257,6 +258,7 @@ namespace Boss
         }
         public override void OnStart()
         {
+            BossObject.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
             theBoss.animator.Play("Boss_LongPause");
             OnDestroy();
         }

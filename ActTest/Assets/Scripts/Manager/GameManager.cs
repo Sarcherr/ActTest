@@ -4,12 +4,16 @@ using UnityEngine;
 using UnityEngine.UI;
 using Unit;
 using System.Xml.Xsl;
-//using Boss;
+using UnityEngine.SceneManagement;
+using Boss;
+using BossAct;
 
 public class GameManager : MonoBehaviour
 {
     [HideInInspector] public Player player;
-    //[HideInInspector] public Boss boss;
+    [HideInInspector] public BossUpdate boss;
+
+    [HideInInspector] public GameObject settings;
 
     [HideInInspector] public GameObject _HP;
     [HideInInspector] public GameObject _SP;
@@ -23,10 +27,13 @@ public class GameManager : MonoBehaviour
     [Header("震动时间")] public float shakeForce = 10f;
     [Header("震动强度")] public float shakeTime = 0.2f;
     [HideInInspector] public bool hasShake = false;
+    [HideInInspector] public bool settingOpen = false;
 
     void Start()
     {
         player = GameObject.Find("Player").GetComponent<Player>();
+        boss = GameObject.Find("Boss").GetComponent<BossUpdate>();
+        settings = transform.Find("SettingBackGround").gameObject;
 
         _HP = transform.Find("_HP").gameObject;
         _SP = transform.Find("_SP").gameObject;
@@ -41,9 +48,21 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        if(Input.GetKeyDown(KeyCode.Escape))
+        {
+            settingOpen = !settingOpen;
+            settings.SetActive(settingOpen);
+            if(settingOpen)
+            {
+                Time.timeScale = 0;
+            }
+        }
+
+        #region UI调整
         Curer.fillAmount = (float)player.currentCure / player.maxCure;
         HP.fillAmount = (float)player.currentHP / player.maxHP;
-        if(player.currentSP ==  player.maxSP)
+        BossHP.fillAmount = boss.preBhp / boss.BossHP;
+        if (player.currentSP ==  player.maxSP)
         {
             SP.Play("SP_5");
         }
@@ -63,7 +82,20 @@ public class GameManager : MonoBehaviour
         {
             SP.Play("SP_1");
         }
-        //BossHP.fillAmount = 
+        #endregion
+    }
+
+    public void QuitGame()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("CCZ_Scene_Begin");
+    }
+
+    public void ContinueGame()
+    {
+        settingOpen = false;
+        settings.SetActive(settingOpen);
+        Time.timeScale = 1f;
     }
 
     public void Shake(GameObject ui)
