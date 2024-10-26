@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unit;
 using Unity.VisualScripting;
 using UnityEngine;
+using static UnityEngine.RuleTile.TilingRuleOutput;
 
 namespace FSM
 {
@@ -380,6 +381,7 @@ namespace FSM
 
         public override void OnExit()
         {
+            myRigidBody.velocity = new Vector2(0, 0);
             myPlayer.attackTimer = myPlayer.attackTime;
             myPlayer.Set_normal_1(0);
             myPlayer.Set_normal_2(0);
@@ -390,6 +392,7 @@ namespace FSM
             {
                 if (myPlayer.hasPull && myPlayer.isGrounded)
                 {
+                    myRigidBody.velocity = Vector2.zero;
                     attackNum = 0;
                     myPlayer.attackTimer = 0;
 
@@ -397,6 +400,7 @@ namespace FSM
                 }
                 else if (preTimer > 0 && myPlayer.isGrounded)
                 {
+                    myRigidBody.velocity = Vector2.zero;
                     myFSM.SetState(StateKind.Attack_normal);
                 }
                 else if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && myPlayer.isGrounded)
@@ -554,6 +558,7 @@ namespace FSM
 
         public override void OnExit()
         {
+            myRigidBody.velocity = new Vector2(0, 0);
             myPlayer.hasPull = false;
             myPlayer.Set_heavy(0);
             myPlayer.Set_canCancel(1);
@@ -742,6 +747,7 @@ namespace FSM
 
         public override void OnEnter()
         {
+            myObject.layer = LayerMask.NameToLayer("Player_dash");
             //闪避通过给予固定冲刺速度和取消重力实现
             myRigidBody.gravityScale = 0;
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D) || !myPlayer.isGrounded)
@@ -768,6 +774,7 @@ namespace FSM
         {
             if (!myPlayer.inDashWindow)
             {
+                myObject.layer = LayerMask.NameToLayer("Player");
                 myPlayer.Set_isInvincible(0);
                 myRigidBody.gravityScale = 1;
                 myRigidBody.velocity = new Vector2(0, 0);
@@ -814,15 +821,17 @@ namespace FSM
         }
         public override void OnEnter()
         {
+            myObject.layer = LayerMask.NameToLayer("Player_dash");
             //闪避通过给予固定冲刺速度和取消重力实现
             myRigidBody.gravityScale = 0;
-            myRigidBody.velocity = new Vector2(myPlayer.dashSpeed * myPlayer.faceDir * 2f, 0);
+            myRigidBody.velocity = new Vector2(myPlayer.dashSpeed * myPlayer.faceDir * 1.5f, 0);
             myPlayer.Set_isInvincible(1);
             myPlayer.animator.Play("Dash_extreme_player");
         }
 
         public override void OnExit()
         {
+            myObject.layer = LayerMask.NameToLayer("Player");
             myPlayer.Set_inDashWindow(0);
             myPlayer.Set_inDashWindow_back(0);
             myPlayer.Set_isInvincible(0);

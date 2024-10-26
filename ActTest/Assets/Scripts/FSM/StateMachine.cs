@@ -85,6 +85,7 @@ namespace FSM
             AddState(StateKind.Dash, new DashState(this));
             AddState(StateKind.Dash_extreme, new DashState_extreme(this));
             AddState(StateKind.Hurt, new HurtState(this));
+            AddState(StateKind.Dead, new DeadState(this));
             //初始设置待机状态
             SetState(StateKind.Idle);
             CurrentState.OnEnter();

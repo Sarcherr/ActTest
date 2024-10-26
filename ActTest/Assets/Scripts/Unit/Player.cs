@@ -5,6 +5,7 @@ using System;
 using System.Xml.Serialization;
 using FSM;
 using Cinemachine;
+using System.Xml.Linq;
 
 namespace Unit
 {
@@ -123,17 +124,9 @@ namespace Unit
         [Header("血瓶治疗量")] public int cureQuantity;
 
         /// <summary>
-        /// 普通(轻)攻击伤害_1
+        /// 普通(轻)攻击伤害
         /// </summary>
-        [Header("普通(轻)攻击伤害_1")] public int attackDamage_normal_1;
-        /// <summary>
-        /// 普通(轻)攻击伤害_2
-        /// </summary>
-        [Header("普通(轻)攻击伤害_2")] public int attackDamage_normal_2;
-        /// <summary>
-        /// 普通(轻)攻击伤害_3
-        /// </summary>
-        [Header("普通(轻)攻击伤害_3")] public int attackDamage_normal_3;
+        [Header("普通(轻)攻击伤害")] public int attackDamage_normal;
         /// <summary>
         /// 重攻击伤害
         /// </summary>
@@ -143,13 +136,9 @@ namespace Unit
         /// </summary>
         [Header("空中攻击伤害")] public int attackDamage_sky;
         /// <summary>
-        /// 技能攻击伤害_1_1(登龙1段)
+        /// 技能攻击伤害_1(登龙)
         /// </summary>
-        [Header("技能攻击伤害_1_1(登龙1段)")] public int attackDamage_skill_1_1;
-        /// <summary>
-        /// 技能攻击伤害_1_2(登龙2段)
-        /// </summary>
-        [Header("技能攻击伤害_1_2(登龙2段)")] public int attackDamage_skill_1_2;
+        [Header("技能攻击伤害_1_1(登龙1段)")] public int attackDamage_skill_1;
         /// <summary>
         /// 技能攻击伤害_2_1(次元斩1层)
         /// </summary>
@@ -162,6 +151,18 @@ namespace Unit
         /// 技能攻击伤害_2_3(次元斩3层)
         /// </summary>
         [Header("技能攻击伤害_2_2(次元斩3层)")] public int attackDamage_skill_2_3;
+        /// <summary>
+        /// 普通(轻)攻击命中回复SP
+        /// </summary>
+        [Header("普通(轻)攻击命中回复SP")] public int attackGain_normal;
+        /// <summary>
+        /// 重攻击命中回复SP
+        /// </summary>
+        [Header("重攻击命中回复SP")] public int attackGain_heavy;
+        /// <summary>
+        /// 空中攻击命中回复SP
+        /// </summary>
+        [Header("空中攻击命中回复SP")] public int attackGain_sky;
 
 
         /// <summary>
@@ -216,6 +217,15 @@ namespace Unit
         /// 是否处于无敌状态
         /// </summary>
         [HideInInspector] public bool isInvincible = false;
+
+        /// <summary>
+        /// 是否产生落点偏差
+        /// </summary>
+        [HideInInspector] public bool hasBias = false;
+        /// <summary>
+        /// 落点偏差坐标
+        /// </summary>
+        [HideInInspector] public Vector2 biasPos;
 
         /// <summary>
         /// 攻击判定框normal_1
@@ -295,6 +305,10 @@ namespace Unit
         /// 角色状态机
         /// </summary>
         [HideInInspector] public StateMachine fsm;
+        /// <summary>
+        /// 游戏管理器
+        /// </summary>
+        [HideInInspector] public GameManager gameManager;
 
         void Start()
         {
@@ -308,9 +322,10 @@ namespace Unit
 
             fsm = new StateMachine(gameObject);
             fsm.OnEnable();
-
+            
             animator = GetComponent<Animator>();
             myCamera = GameObject.Find("PlayerCamera").GetComponent<CinemachineVirtualCamera>();
+            gameManager = GameObject.Find("Canvas").GetComponent<GameManager>();
 
             attackRange_normal_1 = transform.Find("AttackRange_normal_1").gameObject;
             attackRange_normal_2 = transform.Find("AttackRange_normal_2").gameObject;
@@ -341,11 +356,11 @@ namespace Unit
 
             if(Input.GetKeyDown(KeyCode.R))
             {
-                Debug.Log(fsm.CurrentState);
+                Debug.Log(fsm.CurrentStateKind);
             }
             if(Input.GetKeyDown(KeyCode.Q))
             {
-                Hurt(0);
+                Hurt(10);
             }
             if(Input.GetKeyDown(KeyCode.E))
             {
@@ -442,8 +457,8 @@ namespace Unit
                 }
                 else
                 {
-                    Debug.Log("SP不够喵");
                     //ui效果提示等
+                    gameManager.Shake(gameManager._SP);
 
                     return false;
                 }
@@ -457,6 +472,21 @@ namespace Unit
                     {
                         SPChange(-attackConsumption_skill_2_3);
                         skillNow = SkillHasUse.skill_2_3;
+
+                        //DetectLayer_9:Edge(防止闪出地图外)
+                        RaycastHit2D hit = 
+                            Physics2D.Raycast(transform.position, new Vector2(faceDir, 0), 10.4f, 1 << LayerMask.NameToLayer("Edge"));
+                        if(hit.collider != null)
+                        {
+                            hasBias = true;
+                            float x_bias = hit.point.x - skill_2_3_end.transform.position.x;
+                            biasPos = new Vector2(transform.position.x + x_bias, transform.position.y);
+                        }
+                        else
+                        {
+                            hasBias = false;
+                            biasPos = Vector2.zero;
+                        }
                     }
                     else if(currentSP >= attackConsumption_skill_2_2)
                     {
@@ -476,8 +506,8 @@ namespace Unit
                 }
                 else
                 {
-                    Debug.Log("SP不够喵");
                     //ui效果提示等
+                    gameManager.Shake(gameManager._SP);
 
                     return false;
                 }
@@ -532,7 +562,9 @@ namespace Unit
             //极限闪避
             if(inDashWindow || inDashWindow_back)
             {
-                if(inDashWindow)
+                transform.gameObject.layer = LayerMask.NameToLayer("Player_dash");
+
+                if (inDashWindow)
                 {
                     UltimateEvasion(true);
 
@@ -553,12 +585,14 @@ namespace Unit
             }
             else if (isUnstoppable && !isInvincible)
             {
+                gameManager.Shake(gameManager._HP);
                 hurter.SetActive(true);
                 Invoke(nameof(QuikDisable), 0.08f);
                 currentHP -= (int)(damage * damageScale);
             }
             else if (!isInvincible)
             {
+                gameManager.Shake(gameManager._HP);
                 hurter.SetActive(true);
                 currentHP -= damage;
 
@@ -587,17 +621,23 @@ namespace Unit
             {
                 if(currentCure >= cureConsumption)
                 {
-                    curer.SetActive(true);
-                    int _currentHP = currentHP + cureQuantity;
-                    _currentHP = Math.Clamp(_currentHP, 0, maxHP);
-                    currentHP = _currentHP;
+                    if(fsm.CurrentStateKind is not StateKind.Dead and not StateKind.Hurt
+                        and not StateKind.Attack_normal and not StateKind.Attack_sky
+                         and not StateKind.Attack_heavy and not StateKind.Attack_skill_1
+                          and not StateKind.Attack_skill_2 and not StateKind.Dash_extreme)
+                    {
+                        curer.SetActive(true);
+                        int _currentHP = currentHP + cureQuantity;
+                        _currentHP = Math.Clamp(_currentHP, 0, maxHP);
+                        currentHP = _currentHP;
 
-                    CureChange(-cureConsumption);
+                        CureChange(-cureConsumption);
+                    }
                 }
                 else
                 {
                     //UI提示
-                    Debug.Log("血瓶不够喵");
+                    gameManager.Shake(gameManager._Curer);
                 }
             }
         }
@@ -676,7 +716,18 @@ namespace Unit
         }
         public void Focus_middle()
         {
-            myCamera.Follow = skill_2_3_middle.transform;
+            if(hasBias == false)
+            {
+                myCamera.Follow = skill_2_3_middle.transform;
+            }
+            else
+            {
+                myCamera.Follow = null;
+                transform.position = biasPos;
+                myCamera.Follow = skill_2_3_middle.transform;
+            }
+            hasBias = false;
+            biasPos = Vector2.zero;
         }
         public void Focus_end()
         {
